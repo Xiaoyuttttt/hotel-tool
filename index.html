@@ -29,8 +29,8 @@
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 .wrap{max-width:480px;margin:0 auto;padding:1rem;}
-h1{font-size:18px;font-weight:600;margin-bottom:1.2rem;color:var(--text);}
-.section-label{font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:500;text-transform:uppercase;letter-spacing:.5px;}
+h1{font-size:18px;font-weight:600;margin-bottom:1.2rem;}
+.section-label{font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:500;letter-spacing:.5px;}
 .time-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.4rem;}
 .time-btn{font-size:13px;padding:7px 13px;border-radius:20px;border:1px solid var(--border2);background:var(--bg);color:var(--text);cursor:pointer;-webkit-tap-highlight-color:transparent;}
 .time-btn.active{background:var(--info);color:#fff;border-color:var(--info);}
@@ -38,7 +38,7 @@ h1{font-size:18px;font-weight:600;margin-bottom:1.2rem;color:var(--text);}
 .search-input{width:100%;font-size:15px;padding:10px 14px 10px 36px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg2);color:var(--text);}
 .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:15px;}
 .chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:1.2rem;}
-.chip{font-size:13px;padding:6px 12px;border-radius:20px;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;}
+.chip{font-size:13px;padding:6px 12px;border-radius:20px;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;-webkit-tap-highlight-color:transparent;}
 .chip.done{background:var(--success-bg);color:var(--success);border-color:var(--success);}
 .top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
 .clear-btn{font-size:13px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:var(--bg);color:var(--text2);cursor:pointer;}
@@ -56,13 +56,16 @@ h1{font-size:18px;font-weight:600;margin-bottom:1.2rem;color:var(--text);}
 .gen-btn{width:100%;font-size:16px;padding:14px;border-radius:var(--radius);border:none;background:var(--info);color:#fff;font-weight:600;cursor:pointer;margin-top:.5rem;-webkit-tap-highlight-color:transparent;}
 .output-box{margin-top:1rem;padding:1rem;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg2);font-size:14px;white-space:pre-wrap;line-height:2;}
 .copy-btn{width:100%;margin-top:8px;font-size:14px;padding:11px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg);color:var(--text2);cursor:pointer;}
-.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:flex-end;z-index:100;backdrop-filter:blur(2px);}
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:flex-end;z-index:100;}
 .modal{background:var(--bg);border-radius:var(--radius) var(--radius) 0 0;padding:1.2rem 1.2rem 2rem;width:100%;max-height:88vh;overflow-y:auto;}
 .modal-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 1rem;}
 .modal h3{font-size:16px;font-weight:600;margin-bottom:3px;}
-.modal .sub{font-size:13px;color:var(--text2);margin-bottom:12px;}
-.modal textarea{width:100%;height:150px;font-size:14px;padding:10px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg2);color:var(--text);resize:none;line-height:1.6;}
-.modal input[type=number]{width:100%;font-size:18px;padding:12px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg2);color:var(--text);text-align:center;}
+.modal .sub{font-size:13px;color:var(--text2);margin-bottom:10px;}
+.mode-toggle{display:flex;gap:6px;margin-bottom:10px;}
+.mode-btn{flex:1;font-size:13px;padding:7px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--bg2);color:var(--text2);cursor:pointer;text-align:center;-webkit-tap-highlight-color:transparent;}
+.mode-btn.active{background:var(--info);color:#fff;border-color:var(--info);}
+.modal textarea{width:100%;height:140px;font-size:14px;padding:10px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg2);color:var(--text);resize:none;line-height:1.6;}
+.modal input[type=number]{width:100%;font-size:22px;padding:14px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg2);color:var(--text);text-align:center;}
 .parse-result{font-size:13px;padding:8px 10px;border-radius:var(--radius-sm);margin-top:8px;line-height:1.5;}
 .parse-ok{background:var(--success-bg);color:var(--success);}
 .parse-err{background:var(--danger-bg);color:var(--danger);}
@@ -102,10 +105,11 @@ h1{font-size:18px;font-weight:600;margin-bottom:1.2rem;color:var(--text);}
 </div>
 
 <div class="modal-overlay" id="modalOverlay" style="display:none">
-  <div class="modal">
+  <div class="modal" id="modalBox">
     <div class="modal-handle"></div>
     <h3 id="modalTitle"></h3>
     <div class="sub" id="modalSub"></div>
+    <div id="modeToggleArea"></div>
     <div id="modalBody"></div>
     <div id="parseResult" style="display:none"></div>
     <div id="timePicker" style="display:none">
@@ -121,47 +125,81 @@ h1{font-size:18px;font-weight:600;margin-bottom:1.2rem;color:var(--text);}
 
 <script>
 const HOTELS=[
-  {id:1, name:"遇见云宿",    parse:"ke_shou",    ref:{10:22,12:20,14:18,17:14,20:10,22:6,0:3}},
+  {id:1, name:"遇见云宿",    parse:"ke_shou",    ref:{10:22,12:20,14:18,16:16,18:13,20:10,22:6,0:3}},
   {id:2, name:"华逸酒店",    parse:"ke_ding",    ref:{}},
-  {id:3, name:"巨博大酒店",  parse:"sheng_yu",   ref:{10:48,12:40,14:30,17:25,20:20,22:15,0:10}},
-  {id:4, name:"齐鲁百瑞",    parse:"sheng_yu",   ref:{10:50,12:40,14:30,17:25,20:20,22:10,0:5}},
+  {id:3, name:"巨博大酒店",  parse:"sheng_yu",   ref:{10:48,12:40,14:30,16:27,18:23,20:20,22:15,0:10}},
+  {id:4, name:"齐鲁百瑞",    parse:"sheng_yu",   ref:{10:50,12:40,14:30,16:27,18:23,20:20,22:10,0:5}},
   {id:5, name:"昌吉华东容锦",parse:"manual",     ref:{}},
   {id:6, name:"奇台华东容锦",parse:"manual",     ref:{}},
   {id:7, name:"边疆宾馆",    parse:"sum",        ref:{}},
-  {id:8, name:"帕尔拉克",    parse:"sheng_yu",   ref:{10:70,12:55,14:40,17:30,20:20,22:10,0:5}},
-  {id:9, name:"铂鑫酒店",    parse:"ke_shou2",   ref:{10:50,12:45,14:35,17:30,20:20,22:15,0:8}},
-  {id:10,name:"久佳长江路",  parse:"sheng_liang",ref:{10:21,12:18,14:15,17:12,20:8,22:5,0:3}},
-  {id:11,name:"久佳宝山路",  parse:"sheng_yu",   ref:{10:28,12:20,14:16,17:13,20:10,22:6,0:3}},
-  {id:12,name:"凯莱酒店",    parse:"sheng_liang",ref:{10:48,12:40,14:35,17:25,20:20,22:15,0:10}},
-  {id:13,name:"铭千里",      parse:"manual",     ref:{10:46,12:40,14:30,17:25,20:20,22:10,0:5}},
+  {id:8, name:"帕尔拉克",    parse:"sheng_yu",   ref:{10:70,12:55,14:40,16:35,18:32,20:20,22:10,0:5}},
+  {id:9, name:"铂鑫酒店",    parse:"ke_shou2",   ref:{10:50,12:45,14:35,16:32,18:30,20:20,22:15,0:8}},
+  {id:10,name:"久佳长江路",  parse:"sheng_liang",ref:{10:21,12:18,14:15,16:13,18:11,20:8,22:5,0:3}},
+  {id:11,name:"久佳宝山路",  parse:"sheng_yu",   ref:{10:28,12:20,14:16,16:15,18:13,20:10,22:6,0:3}},
+  {id:12,name:"凯莱酒店",    parse:"sheng_liang",ref:{10:48,12:40,14:35,16:30,18:25,20:20,22:15,0:10}},
+  {id:13,name:"铭千里",      parse:"manual",     ref:{10:46,12:40,14:30,16:27,18:23,20:20,22:10,0:5}},
   {id:14,name:"成润商务",    parse:"chenrun",    ref:{}},
   {id:15,name:"丽庭酒店",    parse:"manual",     ref:{}},
   {id:16,name:"富士国际",    parse:"fushi",      ref:{}},
   {id:17,name:"城品小宿",    parse:"ke_ding",    ref:{}},
 ];
-const TIMES=[{label:"12:00",val:12},{label:"14:00",val:14},{label:"16:00",val:16},{label:"18:00",val:18},{label:"20:00",val:20},{label:"22:00",val:22}];
-const BCAST_HRS=[8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,0];
-const TIME_KEYS=[0,10,12,14,17,20,22];
-let summaryTime=null,entries={},modalHotel=null,parsedVal=null,parsedBcast=null,pickedBcast=null;
 
-function snapTime(h,m){
-  const d=h+(m||0)/60;
-  const snaps=[10,12,14,17,20,22,24];
-  for(const s of snaps){if(d>=s-0.5&&d<s+0.5)return s===24?0:s;}
-  if(d>=23.5)return 0;
+// 汇总时间列表（val=小时数，0=午夜）
+const TIMES=[
+  {label:"12:00",val:12},{label:"14:00",val:14},{label:"16:00",val:16},
+  {label:"18:00",val:18},{label:"20:00",val:20},{label:"22:00",val:22}
+];
+// 对照表用到的时间点
+const REF_KEYS=[0,10,12,14,16,18,20,22];
+
+let summaryTime=null;
+let entries={};
+let modalHotel=null;
+let parsedVal=null;
+let parsedBcast=null;
+let pickedBcast=null;
+let modalMode='paste'; // 'paste' | 'manual'
+
+// 根据汇总时间推算播报时间范围：上次汇总时间(含)+1 到 本次汇总时间(含)
+// 工作从10点开始，第一次汇总是12点，所以上次默认10点
+function getBcastRange(curSummary){
+  if(curSummary===null)return[];
+  const order=TIMES.map(t=>t.val); // [12,14,16,18,20,22]
+  const idx=order.indexOf(curSummary);
+  const prev=idx>0?order[idx-1]:10; // 第一次汇总(12)的上次默认10
+  // 范围：prev+1 到 curSummary，逐小时
+  const range=[];
+  const start=prev+1;
+  const end=curSummary;
+  for(let h=start;h<=end;h++) range.push(h);
+  return range;
+}
+
+function snapTime(h){
+  // 归入最近的参考时间点（±30min规则）
+  const snaps=[10,12,14,16,18,20,22,24];
+  for(const s of snaps){
+    if(h>=s-0.5&&h<s+0.5)return s===24?0:s;
+  }
+  if(h>=23.5)return 0;
   return h;
 }
+
 function getPrevNext(h,t){
   if(!Object.keys(h.ref).length)return{prev:null,next:null};
-  const sorted=TIME_KEYS.filter(k=>h.ref[k]!==undefined).sort((a,b)=>a-b);
+  const sorted=REF_KEYS.filter(k=>h.ref[k]!==undefined).sort((a,b)=>a-b);
   let prev=null,next=null;
-  for(const k of sorted){if(k<=t)prev=h.ref[k];else if(next===null)next=h.ref[k];}
+  for(const k of sorted){
+    if(k<=t)prev=h.ref[k];
+    else if(next===null)next=h.ref[k];
+  }
   return{prev,next};
 }
+
 function getTag(val,bcast,h){
   if(!Object.keys(h.ref).length)return{label:'',cls:'none'};
-  const eff=bcast!==null&&bcast!==undefined?snapTime(bcast,0):summaryTime;
-  const{prev,next}=getPrevNext(h,eff!==null?eff:10);
+  const eff=bcast!==null&&bcast!==undefined?snapTime(bcast):summaryTime;
+  const{prev,next}=getPrevNext(h,eff!==null?eff:12);
   if(prev===null&&next===null)return{label:'',cls:'none'};
   const lo=next!==null?next:(prev-2);
   const hi=prev!==null?prev:(next+2);
@@ -169,6 +207,7 @@ function getTag(val,bcast,h){
   if(val>hi)return{label:'多',cls:'duo'};
   return{label:'少',cls:'shao'};
 }
+
 function parseText(text,mode){
   let m;
   if(mode==='ke_shou'){m=text.match(/可售[：:\s]*(\d+)/);if(m)return{val:+m[1],note:'可售: '+m[1]};}
@@ -176,7 +215,10 @@ function parseText(text,mode){
   if(mode==='sheng_yu'){m=text.match(/剩余可售[：:\s]*(\d+)/);if(m)return{val:+m[1],note:'剩余可售: '+m[1]};}
   if(mode==='sheng_liang'){m=text.match(/剩余房量[：:\s]*(\d+)/);if(m)return{val:+m[1],note:'剩余房量: '+m[1]};}
   if(mode==='ke_shou2'){m=text.match(/今日可售房[：:\s]*(\d+)/);if(m)return{val:+m[1],note:'今日可售房: '+m[1]};}
-  if(mode==='fushi'){m=text.match(/剩下可售[；;：:\s]*(\d+)/)||text.match(/可售[；;：:\s]*(\d+)/);if(m)return{val:+m[1],note:'可售: '+m[1]};}
+  if(mode==='fushi'){
+    m=text.match(/剩下可售[；;：:\s]*(\d+)/)||text.match(/可售[；;：:\s]*(\d+)/);
+    if(m)return{val:+m[1],note:'可售: '+m[1]};
+  }
   if(mode==='chenrun'){
     const ke=text.match(/剩余可售[：:\s]*(\d+)/);
     const yu=text.match(/预离(\d+)间/)||text.match(/预离[：:\s]*(\d+)/);
@@ -193,6 +235,7 @@ function parseText(text,mode){
   }
   return null;
 }
+
 function parseTS(text){
   let m=text.match(/(\d{4}-\d{2}-\d{2})\s+(\d{2}):(\d{2})/);
   if(m)return{h:+m[2],min:+m[3]};
@@ -201,16 +244,21 @@ function parseTS(text){
   return null;
 }
 
-// Time buttons
+// === 时间按钮 ===
 const timeRow=document.getElementById('timeRow');
 TIMES.forEach(t=>{
   const btn=document.createElement('button');
   btn.className='time-btn';btn.textContent=t.label;
-  btn.onclick=()=>{summaryTime=t.val;document.querySelectorAll('.time-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderEntries();};
+  btn.onclick=()=>{
+    summaryTime=t.val;
+    document.querySelectorAll('.time-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    renderEntries();
+  };
   timeRow.appendChild(btn);
 });
 
-// Chips
+// === 店铺标签 ===
 function renderChips(filter){
   const el=document.getElementById('chipsEl');el.innerHTML='';
   HOTELS.forEach(h=>{
@@ -225,6 +273,7 @@ function renderChips(filter){
 renderChips('');
 document.getElementById('searchInput').oninput=function(){renderChips(this.value.trim());};
 
+// === 已录入列表 ===
 function renderEntries(){
   const area=document.getElementById('entriesEl');
   const hint=document.getElementById('emptyHint');
@@ -239,55 +288,102 @@ function renderEntries(){
     area.appendChild(card);
   });
   document.querySelectorAll('.entry-del').forEach(btn=>{
-    btn.onclick=()=>{delete entries[+btn.dataset.id];renderEntries();renderChips(document.getElementById('searchInput').value.trim());};
+    btn.onclick=()=>{
+      delete entries[+btn.dataset.id];
+      renderEntries();
+      renderChips(document.getElementById('searchInput').value.trim());
+    };
   });
 }
 
+// === 弹窗 ===
 function openModal(h){
   modalHotel=h;parsedVal=null;parsedBcast=null;pickedBcast=null;
+  modalMode=h.parse==='manual'?'manual':'paste';
   document.getElementById('modalTitle').textContent=h.id+'. '+h.name;
-  const isManual=h.parse==='manual';
-  document.getElementById('modalSub').textContent=isManual?'手动输入可售房量':'粘贴播报内容，自动提取';
+  document.getElementById('modalSub').textContent='';
   document.getElementById('parseResult').style.display='none';
   document.getElementById('timePicker').style.display='none';
+
+  // 模式切换按钮（手动店铺不显示切换）
+  const toggleArea=document.getElementById('modeToggleArea');
+  if(h.parse==='manual'){
+    toggleArea.innerHTML='';
+  } else {
+    toggleArea.innerHTML=`
+      <div class="mode-toggle">
+        <div class="mode-btn ${modalMode==='paste'?'active':''}" id="modePaste">粘贴自动识别</div>
+        <div class="mode-btn ${modalMode==='manual'?'active':''}" id="modeManual">手动输入</div>
+      </div>`;
+    document.getElementById('modePaste').onclick=()=>switchMode('paste',h);
+    document.getElementById('modeManual').onclick=()=>switchMode('manual',h);
+  }
+
+  renderModalBody(h);
+  document.getElementById('modalOverlay').style.display='flex';
+}
+
+function switchMode(mode,h){
+  modalMode=mode;
+  parsedVal=null;parsedBcast=null;pickedBcast=null;
+  document.getElementById('parseResult').style.display='none';
+  document.getElementById('timePicker').style.display='none';
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(mode==='paste'?'modePaste':'modeManual').classList.add('active');
+  renderModalBody(h);
+}
+
+function renderModalBody(h){
   const body=document.getElementById('modalBody');
-  if(isManual){
+  if(modalMode==='manual'){
     body.innerHTML=`<input type="number" inputmode="numeric" id="manualInput" placeholder="输入可售房量" />`;
-    setTimeout(()=>{const el=document.getElementById('manualInput');if(el)el.focus();},150);
+    setTimeout(()=>{const el=document.getElementById('manualInput');if(el)el.focus();},100);
   } else {
     body.innerHTML=`<textarea id="modalTA" placeholder="把播报内容粘贴到这里…"></textarea>`;
-    document.getElementById('modalTA').oninput=function(){
-      const res=parseText(this.value,h.parse);
-      const ts=parseTS(this.value);
-      const pr=document.getElementById('parseResult');
-      const tp=document.getElementById('timePicker');
-      parsedVal=null;parsedBcast=null;
-      pr.style.display='none';tp.style.display='none';
-      if(res){
-        parsedVal=res.val;
-        if(ts){
-          parsedBcast=snapTime(ts.h,ts.min);
-          pr.textContent=`✓ 房量: ${res.note}　时间: ${ts.h}:${String(ts.min).padStart(2,'0')} → 归入${parsedBcast===0?'00':parsedBcast}点`;
-          pr.className='parse-result parse-ok';
-        } else {
-          pr.textContent=`✓ 房量: ${res.note}　（请选择播报时间）`;
-          pr.className='parse-result parse-warn';
-          renderTimePicker();tp.style.display='block';
-        }
-        pr.style.display='block';
-      } else if(this.value.trim()){
-        pr.textContent='未能自动识别，请检查内容';
-        pr.className='parse-result parse-err';pr.style.display='block';
-      }
-    };
-    setTimeout(()=>{const el=document.getElementById('modalTA');if(el)el.focus();},150);
+    document.getElementById('modalTA').addEventListener('input',function(){
+      onPasteInput(this.value,h);
+    });
+    setTimeout(()=>{const el=document.getElementById('modalTA');if(el)el.focus();},100);
   }
-  document.getElementById('modalOverlay').style.display='flex';
+}
+
+function onPasteInput(text,h){
+  const res=parseText(text,h.parse);
+  const ts=parseTS(text);
+  const pr=document.getElementById('parseResult');
+  const tp=document.getElementById('timePicker');
+  parsedVal=null;parsedBcast=null;
+  pr.style.display='none';tp.style.display='none';
+
+  if(res){
+    parsedVal=res.val;
+    if(ts){
+      parsedBcast=snapTime(ts.h);
+      pr.textContent=`✓ 房量: ${res.note}　时间: ${ts.h}:${String(ts.min).padStart(2,'0')} → 归入${parsedBcast===0?'00':parsedBcast}点`;
+      pr.className='parse-result parse-ok';
+      pr.style.display='block';
+    } else {
+      pr.textContent=`✓ 房量: ${res.note}　（请选择播报时间）`;
+      pr.className='parse-result parse-warn';
+      pr.style.display='block';
+      renderTimePicker();
+      tp.style.display='block';
+    }
+  } else if(text.trim()){
+    pr.textContent='未能自动识别，可切换到「手动输入」';
+    pr.className='parse-result parse-err';
+    pr.style.display='block';
+  }
 }
 
 function renderTimePicker(){
   const row=document.getElementById('timePickRow');row.innerHTML='';
-  BCAST_HRS.forEach(h=>{
+  const range=getBcastRange(summaryTime);
+  if(!range.length){
+    row.innerHTML='<span style="font-size:13px;color:var(--text3)">请先选择汇总时间</span>';
+    return;
+  }
+  range.forEach(h=>{
     const btn=document.createElement('button');
     btn.className='tpick-btn'+(pickedBcast===h?' active':'');
     btn.textContent=h+':00';
@@ -295,37 +391,57 @@ function renderTimePicker(){
       pickedBcast=h;
       document.querySelectorAll('.tpick-btn').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
-      const snapped=snapTime(h,0);
+      const snapped=snapTime(h);
       const pr=document.getElementById('parseResult');
-      if(parsedVal!==null){pr.textContent=`✓ 房量: ${parsedVal}间　${h}:00 → 归入${snapped===0?'00':snapped}点`;pr.className='parse-result parse-ok';}
+      if(parsedVal!==null){
+        pr.textContent=`✓ 房量: ${parsedVal}间　${h}:00 → 归入${snapped===0?'00':snapped}点`;
+        pr.className='parse-result parse-ok';
+      }
     };
     row.appendChild(btn);
   });
 }
 
-document.getElementById('modalCancel').onclick=()=>{document.getElementById('modalOverlay').style.display='none';};
-document.getElementById('modalConfirm').onclick=()=>{
-  if(!modalHotel)return;
-  const isManual=modalHotel.parse==='manual';
-  let finalVal=null,finalBcast=null;
-  if(isManual){
-    const el=document.getElementById('manualInput');if(el)finalVal=parseInt(el.value.trim());
-  } else {
-    finalVal=parsedVal;
-    finalBcast=parsedBcast!==null?parsedBcast:(pickedBcast!==null?snapTime(pickedBcast,0):null);
-  }
-  if(finalVal!==null&&!isNaN(finalVal)){
-    entries[modalHotel.id]={val:finalVal,bcast:finalBcast};
-    renderEntries();renderChips(document.getElementById('searchInput').value.trim());
-  }
+// 关闭弹窗
+document.getElementById('modalCancel').onclick=()=>{
   document.getElementById('modalOverlay').style.display='none';
+  modalHotel=null;
+};
+document.getElementById('modalOverlay').onclick=function(e){
+  if(e.target===this){this.style.display='none';modalHotel=null;}
 };
 
+// 确认
+document.getElementById('modalConfirm').onclick=()=>{
+  if(!modalHotel)return;
+  let finalVal=null,finalBcast=null;
+
+  if(modalMode==='manual'){
+    const el=document.getElementById('manualInput');
+    if(el)finalVal=parseInt(el.value.trim());
+  } else {
+    finalVal=parsedVal;
+    finalBcast=parsedBcast!==null?parsedBcast:(pickedBcast!==null?snapTime(pickedBcast):null);
+  }
+
+  if(finalVal!==null&&!isNaN(finalVal)){
+    entries[modalHotel.id]={val:finalVal,bcast:finalBcast};
+    renderEntries();
+    renderChips(document.getElementById('searchInput').value.trim());
+  }
+  document.getElementById('modalOverlay').style.display='none';
+  modalHotel=null;
+};
+
+// 清空
 document.getElementById('clearBtn').onclick=()=>{
-  entries={};renderEntries();renderChips(document.getElementById('searchInput').value.trim());
+  entries={};
+  renderEntries();
+  renderChips(document.getElementById('searchInput').value.trim());
   document.getElementById('outputSection').style.display='none';
 };
 
+// 生成汇总
 document.getElementById('genBtn').onclick=()=>{
   const tl=TIMES.find(t=>t.val===summaryTime);
   const tStr=tl?tl.label:'??:??';
@@ -344,6 +460,7 @@ document.getElementById('genBtn').onclick=()=>{
   document.getElementById('outputSection').scrollIntoView({behavior:'smooth',block:'nearest'});
 };
 
+// 复制
 document.getElementById('copyBtn').onclick=function(){
   const text=document.getElementById('outputBox').textContent;
   const btn=this;
@@ -351,8 +468,6 @@ document.getElementById('copyBtn').onclick=function(){
   if(navigator.clipboard){navigator.clipboard.writeText(text).then(done);}
   else{const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);done();}
 };
-
-document.getElementById('modalOverlay').onclick=function(e){if(e.target===this)this.style.display='none';};
 </script>
 </body>
 </html>
