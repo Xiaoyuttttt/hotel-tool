@@ -106,15 +106,8 @@ h1{font-size:18px;font-weight:600;margin-bottom:4px;}
   <div class="modal" id="modalBox">
     <div class="modal-handle"></div>
     <h3 id="modalTitle"></h3>
-    <div id="modeToggleArea" class="mode-toggle" style="display:none">
-      <div class="mode-btn active" id="modePaste">粘贴自动识别</div>
-      <div class="mode-btn" id="modeManual">手动输入</div>
-    </div>
-    <div id="pasteArea">
-      <textarea id="modalTA" placeholder="把播报内容粘贴到这里…"></textarea>
-    </div>
-    <div id="manualArea" style="display:none">
-      <input type="number" inputmode="numeric" id="manualInput" placeholder="输入可售房量" />
+    <div id="unifiedArea">
+      <textarea id="modalTA" placeholder="粘贴播报内容，或直接输入数字…"></textarea>
     </div>
     <div id="parseResult" style="display:none"></div>
     <div id="timePicker" style="display:none">
@@ -130,19 +123,19 @@ h1{font-size:18px;font-weight:600;margin-bottom:4px;}
 
 <script>
 const HOTELS=[
-  {id:1, name:"遇见云宿",    parse:"ke_shou",    ref:{10:22,12:20,14:18,16:16,18:13,20:10,22:6,0:3}},
+  {id:1, name:"遇见云宿",    parse:"ke_shou",    ref:{10:22,12:20,14:18,17:14,20:10,22:6,0:3}},
   {id:2, name:"华逸酒店",    parse:"ke_ding",    ref:{}},
-  {id:3, name:"巨博大酒店",  parse:"sheng_yu",   ref:{10:48,12:40,14:30,16:27,18:23,20:20,22:15,0:10}},
-  {id:4, name:"齐鲁百瑞",    parse:"sheng_yu",   ref:{10:50,12:40,14:30,16:27,18:23,20:20,22:10,0:5}},
+  {id:3, name:"巨博大酒店",  parse:"sheng_yu",   ref:{10:48,12:40,14:30,17:25,20:20,22:15,0:10}},
+  {id:4, name:"齐鲁百瑞",    parse:"sheng_yu",   ref:{10:50,12:40,14:30,17:25,20:20,22:10,0:5}},
   {id:5, name:"昌吉华东容锦",parse:"manual",     ref:{}},
   {id:6, name:"奇台华东容锦",parse:"manual",     ref:{}},
   {id:7, name:"边疆宾馆",    parse:"sum",        ref:{}},
-  {id:8, name:"帕尔拉克",    parse:"sheng_yu",   ref:{10:70,12:55,14:40,16:35,18:32,20:20,22:10,0:5}},
-  {id:9, name:"铂鑫酒店",    parse:"ke_shou2",   ref:{10:50,12:45,14:35,16:32,18:30,20:20,22:15,0:8}},
-  {id:10,name:"久佳长江路",  parse:"sheng_liang",ref:{10:21,12:18,14:15,16:13,18:11,20:8,22:5,0:3}},
-  {id:11,name:"久佳宝山路",  parse:"sheng_yu",   ref:{10:28,12:20,14:16,16:15,18:13,20:10,22:6,0:3}},
-  {id:12,name:"凯莱酒店",    parse:"sheng_liang",ref:{10:48,12:40,14:35,16:30,18:25,20:20,22:15,0:10}},
-  {id:13,name:"铭千里",      parse:"manual",     ref:{10:46,12:40,14:30,16:27,18:23,20:20,22:10,0:5}},
+  {id:8, name:"帕尔拉克",    parse:"sheng_yu",   ref:{10:70,12:55,14:40,17:30,20:20,22:10,0:5}},
+  {id:9, name:"铂鑫酒店",    parse:"ke_shou2",   ref:{10:50,12:45,14:35,17:30,20:20,22:15,0:8}},
+  {id:10,name:"久佳长江路",  parse:"sheng_liang",ref:{10:21,12:18,14:15,17:12,20:8,22:5,0:3}},
+  {id:11,name:"久佳宝山路",  parse:"sheng_yu",   ref:{10:28,12:20,14:16,17:13,20:10,22:6,0:3}},
+  {id:12,name:"凯莱酒店",    parse:"sheng_liang",ref:{10:48,12:40,14:35,17:25,20:20,22:15,0:10}},
+  {id:13,name:"铭千里",      parse:"manual",     ref:{10:46,12:40,14:30,17:25,20:20,22:10,0:5}},
   {id:14,name:"成润商务",    parse:"chenrun",    ref:{}},
   {id:15,name:"丽庭酒店",    parse:"manual",     ref:{}},
   {id:16,name:"富士国际",    parse:"fushi",      ref:{}},
@@ -206,26 +199,57 @@ function snapTime(h){
   if(h>=23.5)return 0;
   return h;
 }
-function getPrevNext(hotel,t){
-  if(!Object.keys(hotel.ref).length)return{prev:null,next:null};
-  const sorted=REF_KEYS.filter(k=>hotel.ref[k]!==undefined).sort((a,b)=>a-b);
-  let prev=null,next=null;
-  for(const k of sorted){if(k<=t)prev=hotel.ref[k];else if(next===null)next=hotel.ref[k];}
-  return{prev,next};
+function getRefAt(hotel,t){
+  const keys=Object.keys(hotel.ref).map(Number).filter(k=>hotel.ref[k]!==undefined).sort((a,b)=>a-b);
+  if(!keys.length)return null;
+  if(hotel.ref[t]!==undefined)return hotel.ref[t];
+  let leftK=null,rightK=null;
+  for(const k of keys){if(k<=t)leftK=k;else if(rightK===null)rightK=k;}
+  if(leftK===null)return hotel.ref[keys[0]];
+  if(rightK===null)return hotel.ref[keys[keys.length-1]];
+  const leftV=hotel.ref[leftK],rightV=hotel.ref[rightK];
+  const ratio=(t-leftK)/(rightK-leftK);
+  return Math.round(leftV+(rightV-leftV)*ratio);
 }
-function getTag(val,bcastTime,hotel){
+function getTag(val,bcastTime,hotel,slotTime){
   if(!Object.keys(hotel.ref).length)return{label:'',cls:''};
-  const eff=bcastTime!==null&&bcastTime!==undefined?snapTime(bcastTime):summaryTime;
-  const{prev,next}=getPrevNext(hotel,eff!==null?eff:12);
-  if(prev===null&&next===null)return{label:'',cls:''};
-  const lo=next!==null?next:(prev-2);
-  const hi=prev!==null?prev:(next+2);
-  if(val>=lo&&val<=hi)return{label:'正常',cls:'normal'};
-  if(val>hi)return{label:'多',cls:'duo'};
-  return{label:'少',cls:'shao'};
+  const eff=bcastTime!==null&&bcastTime!==undefined?snapTime(bcastTime):(slotTime!==undefined?slotTime:summaryTime);
+  const t=eff!==null?eff:12;
+
+  const keys=Object.keys(hotel.ref).map(Number).filter(k=>hotel.ref[k]!==undefined).sort((a,b)=>a-b);
+  if(!keys.length)return{label:'',cls:''};
+
+  const hasExactRef=hotel.ref[t]!==undefined;
+
+  if(hasExactRef){
+    // 对照表有这个时间点：严格对比（播报时间=时间段才严格，否则±1）
+    const ref=hotel.ref[t];
+    const baseTime=slotTime!==undefined?slotTime:summaryTime;
+    const isExact=(eff===baseTime);
+    const tolerance=isExact?0:1;
+    if(val>=ref-tolerance&&val<=ref+tolerance)return{label:'正常',cls:'normal'};
+    if(val>ref+tolerance)return{label:'多',cls:'duo'};
+    return{label:'少',cls:'shao'};
+  } else {
+    // 对照表没有这个时间点：用左右邻居的ref值作为正常区间
+    let leftK=null,rightK=null;
+    for(const k of keys){if(k<=t)leftK=k;else if(rightK===null)rightK=k;}
+    if(leftK===null||rightK===null){
+      // 超出对照表范围，用最近端点
+      const ref=leftK!==null?hotel.ref[leftK]:hotel.ref[rightK];
+      if(val===ref)return{label:'正常',cls:'normal'};
+      if(val>ref)return{label:'多',cls:'duo'};
+      return{label:'少',cls:'shao'};
+    }
+    const hi=hotel.ref[leftK];  // 左边时间点ref值更大（房间随时间递减）
+    const lo=hotel.ref[rightK]; // 右边时间点ref值更小
+    if(val>=lo&&val<=hi)return{label:'正常',cls:'normal'};
+    if(val>hi)return{label:'多',cls:'duo'};
+    return{label:'少',cls:'shao'};
+  }
 }
-function formatVal(val,bcastTime,hotel){
-  const tag=getTag(val,bcastTime,hotel);
+function formatVal(val,bcastTime,hotel,slotTime){
+  const tag=getTag(val,bcastTime,hotel,slotTime);
   if(tag.label==='多')return`${val}（多）`;
   if(tag.label==='少')return`${val}（少）`;
   return`${val}`;
@@ -318,7 +342,7 @@ function renderEntries(){
   elEmptyHint.style.display='none';
   filled.forEach(h=>{
     const e=allData[h.id][summaryTime];
-    const tag=getTag(e.val,e.bcast,h);
+    const tag=getTag(e.val,e.bcast,h,summaryTime);
     const tagHtml=tag.label?`<span style="font-size:11px;padding:2px 7px;border-radius:20px;background:var(--bg3);color:var(--text2);margin-left:4px">${tag.label}</span>`:'';
     const card=document.createElement('div');card.className='entry-card';
     card.innerHTML=`<span class="entry-name">${h.id}. ${h.name}</span><span class="entry-val">${e.val}间${tagHtml?tagHtml:''}</span><button class="entry-del" data-id="${h.id}">×</button>`;
@@ -337,47 +361,41 @@ function renderEntries(){
 // ── 弹窗元素 ──
 const elOverlay=document.getElementById('modalOverlay');
 const elTitle=document.getElementById('modalTitle');
-const elToggle=document.getElementById('modeToggleArea');
-const elModePaste=document.getElementById('modePaste');
-const elModeManual=document.getElementById('modeManual');
-const elPasteArea=document.getElementById('pasteArea');
-const elManualArea=document.getElementById('manualArea');
 const elTA=document.getElementById('modalTA');
-const elManualInput=document.getElementById('manualInput');
 const elParseResult=document.getElementById('parseResult');
 const elTimePicker=document.getElementById('timePicker');
 const elTimePickRow=document.getElementById('timePickRow');
 
 function openModal(h){
   modalHotel=h;parsedVal=null;parsedBcast=null;pickedBcast=null;
-  modalMode=h.parse==='manual'?'manual':'paste';
   elTitle.textContent=h.id+'. '+h.name;
   elParseResult.style.display='none';
   elTimePicker.style.display='none';
-  elTA.value='';elManualInput.value='';
-  if(h.parse==='manual'){
-    elToggle.style.display='none';showManualMode();
-  } else {
-    elToggle.style.display='flex';
-    elModePaste.classList.add('active');elModeManual.classList.remove('active');
-    showPasteMode();
-  }
+  elTA.value='';
   elOverlay.style.display='flex';
-  setTimeout(()=>{if(modalMode==='paste')elTA.focus();else elManualInput.focus();},100);
+  setTimeout(()=>elTA.focus(),100);
 }
-function showPasteMode(){modalMode='paste';elPasteArea.style.display='block';elManualArea.style.display='none';elParseResult.style.display='none';elTimePicker.style.display='none';}
-function showManualMode(){modalMode='manual';elPasteArea.style.display='none';elManualArea.style.display='block';elParseResult.style.display='none';elTimePicker.style.display='none';}
 
-elModePaste.onclick=()=>{elModePaste.classList.add('active');elModeManual.classList.remove('active');parsedVal=null;parsedBcast=null;pickedBcast=null;showPasteMode();setTimeout(()=>elTA.focus(),100);};
-elModeManual.onclick=()=>{elModeManual.classList.add('active');elModePaste.classList.remove('active');parsedVal=null;parsedBcast=null;pickedBcast=null;showManualMode();setTimeout(()=>elManualInput.focus(),100);};
-
-elTA.addEventListener('input',function(){if(modalHotel)onPasteInput(this.value,modalHotel);});
-
-function onPasteInput(text,h){
-  const res=parseText(text,h.parse);
-  const ts=parseTS(text);
+elTA.addEventListener('input',function(){
+  if(!modalHotel)return;
+  const text=this.value.trim();
   parsedVal=null;parsedBcast=null;
   elParseResult.style.display='none';elTimePicker.style.display='none';
+  if(!text)return;
+
+  // 纯数字：直接当房量
+  if(/^\d+$/.test(text)){
+    parsedVal=parseInt(text);
+    elParseResult.textContent=`✓ 房量: ${parsedVal}间　（请选择播报时间）`;
+    elParseResult.className='parse-result parse-warn';
+    elParseResult.style.display='block';
+    renderTimePicker();elTimePicker.style.display='block';
+    return;
+  }
+
+  // 播报文本：尝试提取
+  const res=parseText(text,modalHotel.parse);
+  const ts=parseTS(text);
   if(res){
     parsedVal=res.val;
     if(ts){
@@ -389,11 +407,11 @@ function onPasteInput(text,h){
       elParseResult.className='parse-result parse-warn';elParseResult.style.display='block';
       renderTimePicker();elTimePicker.style.display='block';
     }
-  } else if(text.trim()){
-    elParseResult.textContent='未能自动识别，可切换到「手动输入」';
+  } else {
+    elParseResult.textContent='未能自动识别，请直接输入数字';
     elParseResult.className='parse-result parse-err';elParseResult.style.display='block';
   }
-}
+});
 
 function renderTimePicker(){
   elTimePickRow.innerHTML='';
@@ -423,13 +441,8 @@ document.getElementById('modalBox').addEventListener('click',function(e){e.stopP
 document.getElementById('modalConfirm').addEventListener('click',function(e){
   e.stopPropagation();
   if(!modalHotel||summaryTime===null)return;
-  let finalVal=null,finalBcast=null;
-  if(modalMode==='manual'){
-    finalVal=parseInt(elManualInput.value.trim());
-  } else {
-    finalVal=parsedVal;
-    finalBcast=parsedBcast!==null?parsedBcast:(pickedBcast!==null?snapTime(pickedBcast):null);
-  }
+  const finalVal=parsedVal;
+  const finalBcast=parsedBcast!==null?parsedBcast:(pickedBcast!==null?snapTime(pickedBcast):null);
   if(finalVal!==null&&!isNaN(finalVal)){
     if(!allData[modalHotel.id])allData[modalHotel.id]={};
     allData[modalHotel.id][summaryTime]={val:finalVal,bcast:finalBcast};
@@ -461,7 +474,7 @@ document.getElementById('genBtn').onclick=()=>{
     const parts=passedTimes.map(t=>{
       const e=allData[h.id]&&allData[h.id][t.val];
       if(!e)return'-';
-      return formatVal(e.val,e.bcast,h);
+      return formatVal(e.val,e.bcast,h,t.val);
     });
     lines.push(`${h.id}、${h.name}：${parts.join('/')}`);
   });
