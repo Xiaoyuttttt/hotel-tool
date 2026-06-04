@@ -85,7 +85,10 @@ h1{font-size:18px;font-weight:600;margin-bottom:4px;}
   <div class="time-row" id="timeRow"></div>
   <div class="top-bar">
     <div class="section-label" style="margin-bottom:0">店铺填写</div>
-    <button class="clear-btn" id="clearBtn">清空今日数据</button>
+    <div style="display:flex;gap:6px;">
+      <button class="clear-btn" id="importBtn">📥 导入历史</button>
+      <button class="clear-btn" id="clearBtn">清空</button>
+    </div>
   </div>
   <div class="search-wrap">
     <span class="search-icon">🔍</span>
@@ -99,6 +102,20 @@ h1{font-size:18px;font-weight:600;margin-bottom:4px;}
   <div id="outputSection" style="display:none">
     <div class="output-box" id="outputBox"></div>
     <button class="copy-btn" id="copyBtn">📋 复制</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="importOverlay" style="display:none">
+  <div class="modal" id="importBox">
+    <div class="modal-handle"></div>
+    <h3>导入历史数据</h3>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:10px;">把之前生成的汇总文本粘贴进来，自动还原历史数据</div>
+    <textarea id="importTA" style="width:100%;height:180px;font-size:13px;padding:10px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg2);color:var(--text);resize:none;line-height:1.6;" placeholder="粘贴汇总文本，例如：&#10;❤️18:00❤️&#10;1、遇见云宿：19（少）/16（少）/15/14（多）&#10;..."></textarea>
+    <div id="importResult" style="display:none;font-size:13px;padding:8px 10px;border-radius:var(--radius-sm);margin-top:8px;line-height:1.5;"></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" id="importCancel">取消</button>
+      <button class="btn-confirm" id="importConfirm">导入</button>
+    </div>
   </div>
 </div>
 
@@ -452,6 +469,103 @@ document.getElementById('modalConfirm').addEventListener('click',function(e){
   }
   elOverlay.style.display='none';modalHotel=null;
 });
+
+// ── 导入历史数据 ──
+document.getElementById('importBtn').onclick=()=>{
+  document.getElementById('importTA').value='';
+  document.getElementById('importResult').style.display='none';
+  document.getElementById('importOverlay').style.display='flex';
+  setTimeout(()=>document.getElementById('importTA').focus(),100);
+};
+document.getElementById('importCancel').onclick=()=>{
+  document.getElementById('importOverlay').style.display='none';
+};
+document.getElementById('importBox').addEventListener('click',e=>e.stopPropagation());
+document.getElementById('importOverlay').addEventListener('click',function(e){
+  if(e.target===this)this.style.display='none';
+});
+
+document.getElementById('importTA').addEventListener('input',function(){
+  const res=parseImportText(this.value.trim());
+  const el=document.getElementById('importResult');
+  if(!res){el.style.display='none';return;}
+  el.textContent=`识别到 ${res.times.length} 个时间段，${res.count} 条店铺数据`;
+  el.className='parse-result parse-ok';
+  el.style.display='block';
+});
+
+document.getElementById('importConfirm').addEventListener('click',function(e){
+  e.stopPropagation();
+  const text=document.getElementById('importTA').value.trim();
+  const res=parseImportText(text);
+  if(!res||res.count===0){
+    const el=document.getElementById('importResult');
+    el.textContent='未能识别到有效数据，请检查格式';
+    el.className='parse-result parse-err';
+    el.style.display='block';
+    return;
+  }
+  // 全部替换
+  allData=res.data;
+  saveData();
+  renderEntries();
+  updateTimeBtnDots();
+  renderChips(document.getElementById('searchInput').value.trim());
+  document.getElementById('importOverlay').style.display='none';
+});
+
+function parseImportText(text){
+  if(!text)return null;
+  // 找时间头确定汇总时间
+  const timeMatch=text.match(/❤️?(\d{1,2}):00❤️?/);
+  if(!timeMatch)return null;
+  const summaryH=parseInt(timeMatch[1]);
+
+  // 先扫描所有数据行，找出最多有几列（以/分割）
+  const lines=text.split('\n');
+  let maxCols=0;
+  lines.forEach(line=>{
+    const m=line.match(/^(\d+)[、,，.]\s*(.+?)[：:]\s*(.+)$/);
+    if(!m)return;
+    const parts=m[3].trim().split('/');
+    if(parts.length>maxCols)maxCols=parts.length;
+  });
+  if(maxCols===0)return null;
+
+  // 根据列数和汇总时间，推算各列对应的时间段
+  // 汇总时间是最后一列，往前推
+  const passedTimes=TIMES.filter(t=>t.val<=summaryH);
+  // 取最后 maxCols 个时间段
+  const slotTimes=passedTimes.slice(-maxCols);
+
+  const data={};
+  let count=0;
+
+  lines.forEach(line=>{
+    const m=line.match(/^(\d+)[、,，.]\s*(.+?)[：:]\s*(.+)$/);
+    if(!m)return;
+    const id=parseInt(m[1]);
+    const dataPart=m[3].trim();
+    const hotel=HOTELS.find(h=>h.id===id);
+    if(!hotel)return;
+
+    const parts=dataPart.split('/');
+    parts.forEach((part,idx)=>{
+      if(idx>=slotTimes.length)return;
+      const p=part.trim();
+      if(p==='-'||p==='')return;
+      const numMatch=p.match(/(\d+)/);
+      if(!numMatch)return;
+      const val=parseInt(numMatch[1]);
+      const slotTime=slotTimes[idx].val;
+      if(!data[id])data[id]={};
+      data[id][slotTime]={val,bcast:slotTime};
+      count++;
+    });
+  });
+
+  return{times:slotTimes,count,data};
+}
 
 // ── 清空 ──
 document.getElementById('clearBtn').onclick=()=>{
