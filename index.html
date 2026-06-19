@@ -81,6 +81,10 @@ h1{font-size:18px;font-weight:600;margin-bottom:4px;}
 <div class="wrap">
   <h1>🏨 酒店房量汇总</h1>
   <div class="date-bar" id="dateBar"></div>
+  <div style="display:flex;gap:8px;margin-bottom:1.2rem;">
+    <button class="mode-btn active" id="modeNormal" onclick="switchMode('normal')">平时</button>
+    <button class="mode-btn" id="modeHoliday" onclick="switchMode('holiday')">节假日</button>
+  </div>
   <div class="section-label">汇总时间</div>
   <div class="time-row" id="timeRow"></div>
   <div class="top-bar">
@@ -159,10 +163,44 @@ const HOTELS=[
   {id:17,name:"城品小宿",    parse:"ke_ding",    ref:{}},
 ];
 
-const TIMES=[
-  {label:"11:00",val:11},{label:"12:00",val:12},{label:"15:00",val:15},
-  {label:"18:00",val:18},{label:"21:00",val:21}
-];
+const SCHEDULES={
+  normal:[
+    {label:"11:00",val:11},{label:"12:00",val:12},{label:"15:00",val:15},
+    {label:"18:00",val:18},{label:"21:00",val:21}
+  ],
+  holiday:[
+    {label:"12:00",val:12},{label:"14:00",val:14},{label:"16:00",val:16},
+    {label:"18:00",val:18},{label:"20:00",val:20},{label:"22:00",val:22}
+  ]
+};
+let currentSchedule='normal';
+let TIMES=SCHEDULES.normal;
+
+function switchMode(mode){
+  currentSchedule=mode;
+  TIMES=SCHEDULES[mode];
+  document.getElementById('modeNormal').classList.toggle('active',mode==='normal');
+  document.getElementById('modeHoliday').classList.toggle('active',mode==='holiday');
+  summaryTime=null;
+  // 重建时间按钮
+  const tr=document.getElementById('timeRow');
+  tr.innerHTML='';
+  TIMES.forEach(t=>{
+    const btn=document.createElement('button');
+    btn.className='time-btn';
+    btn.textContent=t.label;
+    btn.id='tbtn_'+t.val;
+    btn.onclick=()=>{
+      summaryTime=t.val;
+      document.querySelectorAll('.time-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      renderEntries();
+    };
+    tr.appendChild(btn);
+  });
+  updateTimeBtnDots();
+  renderEntries();
+}
 const REF_KEYS=[0,10,12,14,17,20,22];
 const STORAGE_KEY='hotel_data';
 const DATE_KEY='hotel_date';
@@ -315,21 +353,7 @@ function parseTS(text){
   return null;
 }
 
-// ── 时间按钮 ──
-const timeRow=document.getElementById('timeRow');
-TIMES.forEach(t=>{
-  const btn=document.createElement('button');
-  btn.className='time-btn';
-  btn.textContent=t.label;
-  btn.id='tbtn_'+t.val;
-  btn.onclick=()=>{
-    summaryTime=t.val;
-    document.querySelectorAll('.time-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    renderEntries();
-  };
-  timeRow.appendChild(btn);
-});
+// ── 时间按钮（由switchMode生成）──
 
 function updateTimeBtnDots(){
   TIMES.forEach(t=>{
@@ -609,6 +633,7 @@ document.getElementById('copyBtn').onclick=function(){
 };
 
 // ── 初始化 ──
+switchMode('normal');
 loadData();
 updateTimeBtnDots();
 renderEntries();
