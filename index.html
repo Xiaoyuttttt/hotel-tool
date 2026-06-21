@@ -161,6 +161,7 @@ const HOTELS=[
   {id:15,name:"丽庭酒店",    parse:"manual",     ref:{}},
   {id:16,name:"富士国际",    parse:"fushi",      ref:{}},
   {id:17,name:"城品小宿",    parse:"ke_ding",    ref:{}},
+  {id:18,name:"桃花源",      parse:"taohuayuan", ref:{}},
 ];
 
 const SCHEDULES={
@@ -326,6 +327,7 @@ function parseText(text,mode){
     let m=text.match(/剩余房量[：:\s]*(\d+)/);
     if(m)return{val:+m[1],note:'剩余房量: '+m[1]};
   }
+  if(mode==='taohuayuan'){m=text.match(/可用房[：:\s]*(\d+)/);if(m)return{val:+m[1],note:'可用房: '+m[1]};}
   if(mode==='ke_shou2'){m=text.match(/今日可售房[：:\s]*(\d+)/);if(m)return{val:+m[1],note:'今日可售房: '+m[1]};}
   if(mode==='fushi'){m=text.match(/剩下可售[；;：:\s]*(\d+)/)||text.match(/可售[；;：:\s]*(\d+)/);if(m)return{val:+m[1],note:'可售: '+m[1]};}
   if(mode==='chenrun'){
