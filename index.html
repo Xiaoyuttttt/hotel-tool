@@ -10,7 +10,7 @@
   --bg:#ffffff;--bg2:#f5f5f5;--bg3:#efefef;
   --text:#1a1a1a;--text2:#666;--text3:#999;
   --border:#e0e0e0;--border2:#ccc;
-  --info:#1a56db;--info-bg:#e8f0fe;
+  --info:#1a56db;
   --success:#1e7e34;--success-bg:#e6f4ea;
   --danger:#c0392b;--danger-bg:#fde8e8;
   --warn:#b45309;--warn-bg:#fff8e1;
@@ -20,7 +20,7 @@
   --bg:#1c1c1e;--bg2:#2c2c2e;--bg3:#3a3a3c;
   --text:#f2f2f7;--text2:#aeaeb2;--text3:#636366;
   --border:#3a3a3c;--border2:#48484a;
-  --info:#6ea8fe;--info-bg:#1c3263;
+  --info:#6ea8fe;
   --success:#6fcf8a;--success-bg:#1a3a1f;
   --danger:#f28b82;--danger-bg:#3a1a1a;
   --warn:#fdd663;--warn-bg:#3a2a00;
@@ -28,9 +28,13 @@
 body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 .wrap{max-width:500px;margin:0 auto;padding:1rem;}
 h1{font-size:18px;font-weight:600;margin-bottom:4px;}
-.date-bar{font-size:12px;color:var(--text3);margin-bottom:1.2rem;}
+.date-bar{font-size:12px;color:var(--text3);margin-bottom:.8rem;}
+.seg{display:flex;gap:0;margin-bottom:.8rem;border:1px solid var(--border2);border-radius:var(--radius);overflow:hidden;}
+.seg-btn{flex:1;font-size:13px;padding:8px 4px;border:none;background:var(--bg);color:var(--text2);cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.seg-btn.active{background:var(--info);color:#fff;}
+.seg-btn:not(:last-child){border-right:1px solid var(--border2);}
 .section-label{font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:500;letter-spacing:.5px;}
-.time-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.4rem;}
+.time-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.2rem;}
 .time-btn{font-size:13px;padding:7px 13px;border-radius:20px;border:1px solid var(--border2);background:var(--bg);color:var(--text);cursor:pointer;-webkit-tap-highlight-color:transparent;position:relative;}
 .time-btn.active{background:var(--info);color:#fff;border-color:var(--info);}
 .time-btn.has-data::after{content:'';position:absolute;top:3px;right:3px;width:6px;height:6px;border-radius:50%;background:var(--success);}
@@ -50,43 +54,38 @@ h1{font-size:18px;font-weight:600;margin-bottom:4px;}
 .entry-del{font-size:16px;background:none;border:none;cursor:pointer;color:var(--text3);padding:0 2px;flex-shrink:0;}
 .empty-hint{text-align:center;color:var(--text3);font-size:14px;padding:1.5rem 0;}
 .gen-btn{width:100%;font-size:16px;padding:14px;border-radius:var(--radius);border:none;background:var(--info);color:#fff;font-weight:600;cursor:pointer;margin-top:.5rem;-webkit-tap-highlight-color:transparent;}
-.output-box{margin-top:1rem;padding:1rem;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg2);font-size:14px;white-space:pre-wrap;line-height:2;}
-.copy-btn{width:100%;margin-top:8px;font-size:14px;padding:11px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg);color:var(--text2);cursor:pointer;}
+.group-output{margin-top:1rem;border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;}
+.group-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg3);border-bottom:1px solid var(--border);}
+.group-title{font-size:13px;font-weight:600;color:var(--text);}
+.copy-btn{font-size:13px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:var(--bg);color:var(--text2);cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.output-box{padding:1rem;background:var(--bg2);font-size:14px;white-space:pre-wrap;line-height:2;}
 .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:flex-end;z-index:100;}
 .modal{background:var(--bg);border-radius:var(--radius) var(--radius) 0 0;padding:1.2rem 1.2rem 2rem;width:100%;max-height:88vh;overflow-y:auto;}
 .modal-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 1rem;}
 .modal h3{font-size:16px;font-weight:600;margin-bottom:8px;}
-.mode-toggle{display:flex;gap:6px;margin-bottom:10px;}
-.mode-btn{flex:1;font-size:13px;padding:7px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--bg2);color:var(--text2);cursor:pointer;text-align:center;-webkit-tap-highlight-color:transparent;}
-.mode-btn.active{background:var(--info);color:#fff;border-color:var(--info);}
 .modal textarea{width:100%;height:140px;font-size:14px;padding:10px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg2);color:var(--text);resize:none;line-height:1.6;}
-.modal input[type=number]{width:100%;font-size:22px;padding:14px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg2);color:var(--text);text-align:center;}
 .parse-result{font-size:13px;padding:8px 10px;border-radius:var(--radius-sm);margin-top:8px;line-height:1.5;}
 .parse-ok{background:var(--success-bg);color:var(--success);}
 .parse-err{background:var(--danger-bg);color:var(--danger);}
-.parse-warn{background:var(--warn-bg);color:var(--warn);}
-.time-pick-label{font-size:13px;color:var(--text2);margin-top:12px;margin-bottom:6px;}
-.time-pick{display:flex;flex-wrap:wrap;gap:6px;}
-.tpick-btn{font-size:13px;padding:6px 11px;border-radius:20px;border:1px solid var(--border2);background:var(--bg);color:var(--text);cursor:pointer;-webkit-tap-highlight-color:transparent;}
-.tpick-btn.active{background:var(--info);color:#fff;border-color:var(--info);}
 .modal-btns{display:flex;gap:8px;margin-top:14px;}
 .modal-btns button{flex:1;padding:13px;border-radius:var(--radius);font-size:15px;cursor:pointer;font-weight:500;-webkit-tap-highlight-color:transparent;}
 .btn-confirm{background:var(--info);color:#fff;border:none;}
 .btn-cancel{background:var(--bg2);color:var(--text2);border:1px solid var(--border);}
-.duo{color:var(--danger);}
-.shao{color:var(--success);}
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1>🏨 酒店房量汇总</h1>
   <div class="date-bar" id="dateBar"></div>
-  <div style="display:flex;gap:8px;margin-bottom:1.2rem;">
-    <button class="mode-btn active" id="modeNormal" onclick="switchMode('normal')">平时</button>
-    <button class="mode-btn" id="modeHoliday" onclick="switchMode('holiday')">节假日</button>
+
+  <div class="seg" id="scheduleSeg">
+    <button class="seg-btn active" onclick="switchSchedule('normal')">平时</button>
+    <button class="seg-btn" onclick="switchSchedule('holiday')">节假日</button>
   </div>
+
   <div class="section-label">汇总时间</div>
   <div class="time-row" id="timeRow"></div>
+
   <div class="top-bar">
     <div class="section-label" style="margin-bottom:0">店铺填写</div>
     <div style="display:flex;gap:6px;">
@@ -103,19 +102,17 @@ h1{font-size:18px;font-weight:600;margin-bottom:4px;}
     <div class="empty-hint" id="emptyHint">还没有填写任何店铺</div>
   </div>
   <button class="gen-btn" id="genBtn">生成汇总文本</button>
-  <div id="outputSection" style="display:none">
-    <div class="output-box" id="outputBox"></div>
-    <button class="copy-btn" id="copyBtn">📋 复制</button>
-  </div>
+  <div id="outputSection" style="display:none"></div>
 </div>
 
+<!-- 导入弹窗 -->
 <div class="modal-overlay" id="importOverlay" style="display:none">
   <div class="modal" id="importBox">
     <div class="modal-handle"></div>
     <h3>导入历史数据</h3>
-    <div style="font-size:13px;color:var(--text2);margin-bottom:10px;">把之前生成的汇总文本粘贴进来，自动还原历史数据</div>
-    <textarea id="importTA" style="width:100%;height:180px;font-size:13px;padding:10px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg2);color:var(--text);resize:none;line-height:1.6;" placeholder="粘贴汇总文本，例如：&#10;❤️18:00❤️&#10;1、遇见云宿：19（少）/16（少）/15/14（多）&#10;..."></textarea>
-    <div id="importResult" style="display:none;font-size:13px;padding:8px 10px;border-radius:var(--radius-sm);margin-top:8px;line-height:1.5;"></div>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:10px;">粘贴之前某一组的汇总文本，自动还原历史数据</div>
+    <textarea id="importTA" placeholder="粘贴汇总文本…"></textarea>
+    <div id="importResult" style="display:none"></div>
     <div class="modal-btns">
       <button class="btn-cancel" id="importCancel">取消</button>
       <button class="btn-confirm" id="importConfirm">导入</button>
@@ -123,18 +120,13 @@ h1{font-size:18px;font-weight:600;margin-bottom:4px;}
   </div>
 </div>
 
+<!-- 店铺弹窗 -->
 <div class="modal-overlay" id="modalOverlay" style="display:none">
   <div class="modal" id="modalBox">
     <div class="modal-handle"></div>
     <h3 id="modalTitle"></h3>
-    <div id="unifiedArea">
-      <textarea id="modalTA" placeholder="粘贴播报内容，或直接输入数字…"></textarea>
-    </div>
+    <textarea id="modalTA" placeholder="粘贴播报内容，或直接输入数字…"></textarea>
     <div id="parseResult" style="display:none"></div>
-    <div id="timePicker" style="display:none">
-      <div class="time-pick-label">播报是几点发的？</div>
-      <div class="time-pick" id="timePickRow"></div>
-    </div>
     <div class="modal-btns">
       <button class="btn-cancel" id="modalCancel">取消</button>
       <button class="btn-confirm" id="modalConfirm">确认</button>
@@ -143,198 +135,111 @@ h1{font-size:18px;font-weight:600;margin-bottom:4px;}
 </div>
 
 <script>
-const HOTELS=[
-  {id:1, name:"遇见云宿",    parse:"ke_shou",    ref:{10:22,12:20,14:18,17:14,20:10,22:6,0:3}},
-  {id:2, name:"华逸酒店",    parse:"ke_ding",    ref:{}},
-  {id:3, name:"巨博大酒店",  parse:"sheng_yu",   ref:{10:48,12:40,14:30,17:25,20:20,22:15,0:10}},
-  {id:4, name:"齐鲁百瑞",    parse:"sheng_yu",   ref:{10:50,12:40,14:30,17:25,20:20,22:10,0:5}},
-  {id:5, name:"昌吉华东容锦",parse:"manual",     ref:{}},
-  {id:6, name:"奇台华东容锦",parse:"manual",     ref:{}},
-  {id:7, name:"边疆宾馆",    parse:"sum",        ref:{}},
-  {id:8, name:"帕尔拉克",    parse:"sheng_yu",   ref:{10:70,12:55,14:40,17:30,20:20,22:10,0:5}},
-  {id:9, name:"铂鑫酒店",    parse:"ke_shou2",   ref:{10:50,12:45,14:35,17:30,20:20,22:15,0:8}},
-  {id:10,name:"久佳长江路",  parse:"sheng_liang",ref:{10:21,12:18,14:15,17:12,20:8,22:5,0:3}},
-  {id:11,name:"久佳宝山路",  parse:"sheng_yu",   ref:{10:28,12:20,14:16,17:13,20:10,22:6,0:3}},
-  {id:12,name:"凯莱酒店",    parse:"kelai",      ref:{10:48,12:40,14:35,17:25,20:20,22:15,0:10}},
-  {id:13,name:"铭千里",      parse:"manual",     ref:{10:46,12:40,14:30,17:25,20:20,22:10,0:5}},
-  {id:14,name:"成润商务",    parse:"chenrun",    ref:{}},
-  {id:15,name:"丽庭酒店",    parse:"manual",     ref:{}},
-  {id:16,name:"富士国际",    parse:"fushi",      ref:{}},
-  {id:17,name:"城品小宿",    parse:"ke_ding",    ref:{}},
-  {id:18,name:"桃花源",      parse:"taohuayuan", ref:{}},
-  {id:19,name:"月明楼",      parse:"sheng_yu",   ref:{}},
+const GROUPS=[
+  {name:'一组',hotels:[
+    {id:'g1_1', name:"城品小宿",    parse:"ke_ding",    ref:{}},
+    {id:'g1_2', name:"巨博",        parse:"sheng_yu",   ref:{10:48,12:40,14:30,17:25,20:20,22:15,0:10}},
+    {id:'g1_3', name:"丽庭",        parse:"manual",     ref:{}},
+    {id:'g1_4', name:"华逸",        parse:"ke_ding",    ref:{}},
+    {id:'g1_5', name:"尚钰",        parse:"sheng_yu",   ref:{}},
+    {id:'g1_6', name:"昌吉华东容锦",parse:"manual",     ref:{}},
+    {id:'g1_7', name:"奇台华东容锦",parse:"manual",     ref:{}},
+    {id:'g1_8', name:"桃花源",      parse:"taohuayuan", ref:{}},
+    {id:'g1_9', name:"铂鑫",        parse:"ke_shou2",   ref:{10:50,12:45,14:35,17:30,20:20,22:15,0:8}},
+    {id:'g1_10',name:"铭千里",      parse:"manual",     ref:{10:46,12:40,14:30,17:25,20:20,22:10,0:5}},
+  ]},
+  {name:'二组',hotels:[
+    {id:'g2_1', name:"凯莱",        parse:"kelai",      ref:{10:48,12:40,14:35,17:25,20:20,22:15,0:10}},
+    {id:'g2_2', name:"齐鲁百瑞",    parse:"sheng_yu",   ref:{10:50,12:40,14:30,17:25,20:20,22:10,0:5}},
+    {id:'g2_3', name:"帕尔拉克",    parse:"sheng_yu",   ref:{10:70,12:55,14:40,17:30,20:20,22:10,0:5}},
+    {id:'g2_4', name:"富士国际",    parse:"fushi",      ref:{}},
+    {id:'g2_5', name:"边疆宾馆",    parse:"sum",        ref:{}},
+  ]},
+  {name:'三组',hotels:[
+    {id:'g3_1', name:"久佳长江路",  parse:"sheng_liang",ref:{10:21,12:18,14:15,17:12,20:8,22:5,0:3}},
+    {id:'g3_2', name:"久佳宝山路",  parse:"sheng_yu",   ref:{10:28,12:20,14:16,17:13,20:10,22:6,0:3}},
+    {id:'g3_3', name:"月明楼",      parse:"sheng_yu",   ref:{}},
+    {id:'g3_4', name:"成润商务",    parse:"chenrun",    ref:{}},
+    {id:'g3_5', name:"遇见云宿",    parse:"ke_shou",    ref:{10:22,12:20,14:18,17:14,20:10,22:6,0:3}},
+  ]},
 ];
+const ALL_HOTELS=GROUPS.flatMap(g=>g.hotels);
 
 const SCHEDULES={
-  normal:[
-    {label:"11:00",val:11},{label:"12:00",val:12},{label:"15:00",val:15},
-    {label:"18:00",val:18},{label:"21:00",val:21}
-  ],
-  holiday:[
-    {label:"12:00",val:12},{label:"14:00",val:14},{label:"16:00",val:16},
-    {label:"18:00",val:18},{label:"20:00",val:20},{label:"22:00",val:22}
-  ]
+  normal:[{label:"11:00",val:11},{label:"12:00",val:12},{label:"15:00",val:15},{label:"18:00",val:18},{label:"21:00",val:21}],
+  holiday:[{label:"12:00",val:12},{label:"14:00",val:14},{label:"16:00",val:16},{label:"18:00",val:18},{label:"20:00",val:20},{label:"22:00",val:22}]
 };
+
+const STORAGE_KEY='hotel_data_v3';
+const DATE_KEY='hotel_date_v3';
+
+let allData={};
 let currentSchedule='normal';
 let TIMES=SCHEDULES.normal;
-
-function switchMode(mode){
-  currentSchedule=mode;
-  TIMES=SCHEDULES[mode];
-  document.getElementById('modeNormal').classList.toggle('active',mode==='normal');
-  document.getElementById('modeHoliday').classList.toggle('active',mode==='holiday');
-  summaryTime=null;
-  // 重建时间按钮
-  const tr=document.getElementById('timeRow');
-  tr.innerHTML='';
-  TIMES.forEach(t=>{
-    const btn=document.createElement('button');
-    btn.className='time-btn';
-    btn.textContent=t.label;
-    btn.id='tbtn_'+t.val;
-    btn.onclick=()=>{
-      summaryTime=t.val;
-      document.querySelectorAll('.time-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      renderEntries();
-    };
-    tr.appendChild(btn);
-  });
-  updateTimeBtnDots();
-  renderEntries();
-}
-const REF_KEYS=[0,10,12,14,17,20,22];
-const STORAGE_KEY='hotel_data';
-const DATE_KEY='hotel_date';
-
-// ── 数据结构 ──
-// allData[hotelId][timeVal] = { val, bcast }
-let allData={};
 let summaryTime=null;
 let modalHotel=null;
 let parsedVal=null;
-let parsedBcast=null;
-let pickedBcast=null;
-let modalMode='paste';
 
-// ── 日期检查 & 本地存储 ──
-function todayStr(){
-  const d=new Date();
-  return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
-}
+function todayStr(){const d=new Date();return`${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;}
 function loadData(){
-  const saved=localStorage.getItem(DATE_KEY);
   const today=todayStr();
-  if(saved!==today){
-    // 新的一天，清空
-    allData={};
-    localStorage.setItem(DATE_KEY,today);
-    localStorage.setItem(STORAGE_KEY,JSON.stringify({}));
+  if(localStorage.getItem(DATE_KEY)!==today){
+    allData={};localStorage.setItem(DATE_KEY,today);localStorage.setItem(STORAGE_KEY,JSON.stringify({}));
   } else {
-    try{allData=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');}
-    catch(e){allData={};}
+    try{allData=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');}catch(e){allData={};}
   }
   document.getElementById('dateBar').textContent='今日：'+today.replace(/-/g,'/')+' · 数据自动按天清空';
 }
-function saveData(){
-  localStorage.setItem(STORAGE_KEY,JSON.stringify(allData));
-}
+function saveData(){localStorage.setItem(STORAGE_KEY,JSON.stringify(allData));}
 
-// ── 工具函数 ──
-function getBcastRange(cur){
-  if(cur===null)return[];
-  const order=TIMES.map(t=>t.val);
-  const idx=order.indexOf(cur);
-  const prev=idx>0?order[idx-1]:10;
-  const range=[];
-  for(let h=prev+1;h<=cur;h++)range.push(h);
-  return range;
-}
-function snapTime(h){
-  const snaps=[10,11,12,13,14,15,16,17,18,19,20,21,22,24];
-  for(const s of snaps){if(h>=s-0.5&&h<s+0.5)return s===24?0:s;}
-  if(h>=23.5)return 0;
-  return h;
-}
-function getRefAt(hotel,t){
-  const keys=Object.keys(hotel.ref).map(Number).filter(k=>hotel.ref[k]!==undefined).sort((a,b)=>a-b);
-  if(!keys.length)return null;
-  if(hotel.ref[t]!==undefined)return hotel.ref[t];
-  let leftK=null,rightK=null;
-  for(const k of keys){if(k<=t)leftK=k;else if(rightK===null)rightK=k;}
-  if(leftK===null)return hotel.ref[keys[0]];
-  if(rightK===null)return hotel.ref[keys[keys.length-1]];
-  const leftV=hotel.ref[leftK],rightV=hotel.ref[rightK];
-  const ratio=(t-leftK)/(rightK-leftK);
-  return Math.round(leftV+(rightV-leftV)*ratio);
-}
-function getTag(val,bcastTime,hotel,slotTime){
+function getTag(val,hotel,slotTime){
   if(!Object.keys(hotel.ref).length)return{label:'',cls:''};
-  const eff=bcastTime!==null&&bcastTime!==undefined?snapTime(bcastTime):(slotTime!==undefined?slotTime:summaryTime);
-  const t=eff!==null?eff:12;
-
-  const keys=Object.keys(hotel.ref).map(Number).filter(k=>hotel.ref[k]!==undefined).sort((a,b)=>a-b);
-  if(!keys.length)return{label:'',cls:''};
-
-  const hasExactRef=hotel.ref[t]!==undefined;
-
-  if(hasExactRef){
-    // 对照表有这个时间点：严格对比，差1间就算多/少
+  const t=slotTime||summaryTime||12;
+  const keys=Object.keys(hotel.ref).map(Number).sort((a,b)=>a-b);
+  if(hotel.ref[t]!==undefined){
     const ref=hotel.ref[t];
     if(val===ref)return{label:'正常',cls:'normal'};
     if(val>ref)return{label:'多',cls:'duo'};
     return{label:'少',cls:'shao'};
-  } else {
-    // 对照表没有这个时间点：用左右邻居的ref值作为正常区间
-    let leftK=null,rightK=null;
-    for(const k of keys){if(k<=t)leftK=k;else if(rightK===null)rightK=k;}
-    if(leftK===null||rightK===null){
-      // 超出对照表范围，用最近端点
-      const ref=leftK!==null?hotel.ref[leftK]:hotel.ref[rightK];
-      if(val===ref)return{label:'正常',cls:'normal'};
-      if(val>ref)return{label:'多',cls:'duo'};
-      return{label:'少',cls:'shao'};
-    }
-    const hi=hotel.ref[leftK];  // 左边时间点ref值更大（房间随时间递减）
-    const lo=hotel.ref[rightK]; // 右边时间点ref值更小
-    if(val>=lo&&val<=hi)return{label:'正常',cls:'normal'};
-    if(val>hi)return{label:'多',cls:'duo'};
+  }
+  let lk=null,rk=null;
+  for(const k of keys){if(k<=t)lk=k;else if(rk===null)rk=k;}
+  if(lk===null||rk===null){
+    const ref=lk!==null?hotel.ref[lk]:hotel.ref[rk];
+    if(val===ref)return{label:'正常',cls:'normal'};
+    if(val>ref)return{label:'多',cls:'duo'};
     return{label:'少',cls:'shao'};
   }
+  const hi=hotel.ref[lk],lo=hotel.ref[rk];
+  if(val>=lo&&val<=hi)return{label:'正常',cls:'normal'};
+  if(val>hi)return{label:'多',cls:'duo'};
+  return{label:'少',cls:'shao'};
 }
-function formatVal(val,bcastTime,hotel,slotTime){
-  const tag=getTag(val,bcastTime,hotel,slotTime);
+function formatVal(val,hotel,slotTime){
+  const tag=getTag(val,hotel,slotTime);
   if(tag.label==='多')return`${val}（多）`;
   if(tag.label==='少')return`${val}（少）`;
   return`${val}`;
 }
 
-// ── 解析函数 ──
 function parseText(text,mode){
   let m;
   if(mode==='ke_shou'){m=text.match(/可售[：:\s]*(\d+)/);if(m)return{val:+m[1],note:'可售: '+m[1]};}
   if(mode==='ke_ding'){m=text.match(/可订房数[：:\s]*(\d+)/);if(m)return{val:+m[1],note:'可订房数: '+m[1]};}
   if(mode==='sheng_yu'){m=text.match(/剩余可售[：:\s]*(\d+)/);if(m)return{val:+m[1],note:'剩余可售: '+m[1]};}
   if(mode==='sheng_liang'){m=text.match(/剩余房量[：:\s]*(\d+)/);if(m)return{val:+m[1],note:'剩余房量: '+m[1]};}
-  if(mode==='kelai'){
-    // 新模板：每个房型下有「可卖:X」，加总所有可卖数量
-    const matches=[...text.matchAll(/可卖[：:\s]*(\d+)/g)];
-    if(matches.length){
-      const nums=matches.map(m=>+m[1]);
-      const s=nums.reduce((a,b)=>a+b,0);
-      return{val:s,note:'可卖合计: '+nums.join('+')+' = '+s};
-    }
-    // 兼容旧模板：剩余房量
-    let m=text.match(/剩余房量[：:\s]*(\d+)/);
-    if(m)return{val:+m[1],note:'剩余房量: '+m[1]};
-  }
-  if(mode==='taohuayuan'){m=text.match(/可用房[：:\s]*(\d+)/);if(m)return{val:+m[1],note:'可用房: '+m[1]};}
   if(mode==='ke_shou2'){m=text.match(/今日可售房[：:\s]*(\d+)/);if(m)return{val:+m[1],note:'今日可售房: '+m[1]};}
+  if(mode==='taohuayuan'){m=text.match(/可用房[：:\s]*(\d+)/);if(m)return{val:+m[1],note:'可用房: '+m[1]};}
   if(mode==='fushi'){m=text.match(/剩下可售[；;：:\s]*(\d+)/)||text.match(/可售[；;：:\s]*(\d+)/);if(m)return{val:+m[1],note:'可售: '+m[1]};}
   if(mode==='chenrun'){
     const ke=text.match(/剩余可售[：:\s]*(\d+)/);
     const yu=text.match(/预离(\d+)间/)||text.match(/预离[：:\s]*(\d+)/);
     if(ke){const kv=+ke[1],yv=yu?+yu[1]:0,tot=kv+yv;return{val:tot,note:`剩余可售${kv}+预离${yv}=${tot}`};}
+  }
+  if(mode==='kelai'){
+    const ms=[...text.matchAll(/可卖[：:\s]*(\d+)/g)];
+    if(ms.length){const nums=ms.map(x=>+x[1]),s=nums.reduce((a,b)=>a+b,0);return{val:s,note:'可卖合计: '+nums.join('+')+' = '+s};}
+    m=text.match(/剩余房量[：:\s]*(\d+)/);if(m)return{val:+m[1],note:'剩余房量: '+m[1]};
   }
   if(mode==='sum'){
     const lines=text.split('\n');const nums=[];
@@ -348,62 +253,70 @@ function parseText(text,mode){
   }
   return null;
 }
-function parseTS(text){
-  let m=text.match(/(\d{4}-\d{2}-\d{2})\s+(\d{2}):(\d{2})/);
-  if(m)return{h:+m[2],min:+m[3]};
-  m=text.match(/(\d{1,2}):(\d{2})/);
-  if(m)return{h:+m[1],min:+m[2]};
-  return null;
+
+function switchSchedule(s){
+  currentSchedule=s;TIMES=SCHEDULES[s];summaryTime=null;
+  document.querySelectorAll('#scheduleSeg .seg-btn').forEach((b,i)=>b.classList.toggle('active',i===(s==='normal'?0:1)));
+  buildTimeBtns();renderEntries();updateTimeBtnDots();
+  document.getElementById('outputSection').style.display='none';
 }
 
-// ── 时间按钮（由switchMode生成）──
-
-function updateTimeBtnDots(){
+function buildTimeBtns(){
+  const tr=document.getElementById('timeRow');tr.innerHTML='';
   TIMES.forEach(t=>{
-    const btn=document.getElementById('tbtn_'+t.val);
-    if(!btn)return;
-    const hasAny=HOTELS.some(h=>allData[h.id]&&allData[h.id][t.val]!==undefined);
-    if(hasAny)btn.classList.add('has-data');
-    else btn.classList.remove('has-data');
+    const btn=document.createElement('button');
+    btn.className='time-btn';btn.textContent=t.label;btn.id='tbtn_'+t.val;
+    btn.onclick=()=>{
+      summaryTime=t.val;
+      document.querySelectorAll('.time-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      renderEntries();renderChips(document.getElementById('searchInput').value.trim());
+    };
+    tr.appendChild(btn);
   });
 }
 
-// ── 店铺标签 ──
+function updateTimeBtnDots(){
+  TIMES.forEach(t=>{
+    const btn=document.getElementById('tbtn_'+t.val);if(!btn)return;
+    const has=ALL_HOTELS.some(h=>allData[h.id]&&allData[h.id][t.val]!==undefined);
+    btn.classList.toggle('has-data',has);
+  });
+}
+
 function renderChips(filter){
   const el=document.getElementById('chipsEl');el.innerHTML='';
-  HOTELS.forEach(h=>{
+  ALL_HOTELS.forEach(h=>{
     if(filter&&!h.name.includes(filter))return;
-    const hasCurrent=summaryTime!==null&&allData[h.id]&&allData[h.id][summaryTime]!==undefined;
+    const done=summaryTime!==null&&allData[h.id]&&allData[h.id][summaryTime]!==undefined;
     const c=document.createElement('div');
-    c.className='chip'+(hasCurrent?' done':'');
-    c.textContent=(hasCurrent?'✓ ':'')+h.name;
+    c.className='chip'+(done?' done':'');
+    c.textContent=(done?'✓ ':'')+h.name;
     c.onclick=()=>openModal(h);
     el.appendChild(c);
   });
 }
-renderChips('');
 document.getElementById('searchInput').oninput=function(){renderChips(this.value.trim());};
 
-// ── 已录入列表（当前时段） ──
 const elEntriesArea=document.getElementById('entriesEl');
 const elEmptyHint=document.getElementById('emptyHint');
 function renderEntries(){
   Array.from(elEntriesArea.children).forEach(c=>{if(c!==elEmptyHint)c.remove();});
   if(summaryTime===null){elEmptyHint.style.display='block';return;}
-  const filled=HOTELS.filter(h=>allData[h.id]&&allData[h.id][summaryTime]!==undefined);
+  const filled=ALL_HOTELS.filter(h=>allData[h.id]&&allData[h.id][summaryTime]!==undefined);
   if(!filled.length){elEmptyHint.style.display='block';return;}
   elEmptyHint.style.display='none';
   filled.forEach(h=>{
     const e=allData[h.id][summaryTime];
-    const tag=getTag(e.val,e.bcast,h,summaryTime);
+    const tag=getTag(e.val,h,summaryTime);
     const tagHtml=tag.label?`<span style="font-size:11px;padding:2px 7px;border-radius:20px;background:var(--bg3);color:var(--text2);margin-left:4px">${tag.label}</span>`:'';
     const card=document.createElement('div');card.className='entry-card';
-    card.innerHTML=`<span class="entry-name">${h.id}. ${h.name}</span><span class="entry-val">${e.val}间${tagHtml?tagHtml:''}</span><button class="entry-del" data-id="${h.id}">×</button>`;
+    card.innerHTML=`<span class="entry-name">${h.name}</span><span class="entry-val">${e.val}间${tagHtml}</span><button class="entry-del" data-id="${h.id}">×</button>`;
     elEntriesArea.appendChild(card);
   });
   document.querySelectorAll('.entry-del').forEach(btn=>{
     btn.onclick=()=>{
-      const id=+btn.dataset.id;
+      const id=btn.dataset.id;
       if(allData[id])delete allData[id][summaryTime];
       saveData();renderEntries();updateTimeBtnDots();
       renderChips(document.getElementById('searchInput').value.trim());
@@ -411,20 +324,14 @@ function renderEntries(){
   });
 }
 
-// ── 弹窗元素 ──
 const elOverlay=document.getElementById('modalOverlay');
-const elTitle=document.getElementById('modalTitle');
 const elTA=document.getElementById('modalTA');
 const elParseResult=document.getElementById('parseResult');
-const elTimePicker=document.getElementById('timePicker');
-const elTimePickRow=document.getElementById('timePickRow');
 
 function openModal(h){
-  modalHotel=h;parsedVal=null;parsedBcast=null;pickedBcast=null;
-  elTitle.textContent=h.id+'. '+h.name;
-  elParseResult.style.display='none';
-  elTimePicker.style.display='none';
-  elTA.value='';
+  modalHotel=h;parsedVal=null;
+  document.getElementById('modalTitle').textContent=h.name;
+  elParseResult.style.display='none';elTA.value='';
   elOverlay.style.display='flex';
   setTimeout(()=>elTA.focus(),100);
 }
@@ -432,125 +339,81 @@ function openModal(h){
 elTA.addEventListener('input',function(){
   if(!modalHotel)return;
   const text=this.value.trim();
-  parsedVal=null;parsedBcast=null;
-  elParseResult.style.display='none';elTimePicker.style.display='none';
+  parsedVal=null;elParseResult.style.display='none';
   if(!text)return;
-
-  // 纯数字：直接当房量
   if(/^\d+$/.test(text)){
     parsedVal=parseInt(text);
     elParseResult.textContent=`✓ 房量: ${parsedVal}间`;
-    elParseResult.className='parse-result parse-ok';
-    elParseResult.style.display='block';
+    elParseResult.className='parse-result parse-ok';elParseResult.style.display='block';
     return;
   }
-
-  // 播报文本：尝试提取
   const res=parseText(text,modalHotel.parse);
   if(res){
     parsedVal=res.val;
     elParseResult.textContent=`✓ 房量: ${res.note}`;
-    elParseResult.className='parse-result parse-ok';
-    elParseResult.style.display='block';
+    elParseResult.className='parse-result parse-ok';elParseResult.style.display='block';
   } else {
     elParseResult.textContent='未能自动识别，请直接输入数字';
-    elParseResult.className='parse-result parse-err';
-    elParseResult.style.display='block';
+    elParseResult.className='parse-result parse-err';elParseResult.style.display='block';
   }
 });
-
-function renderTimePicker(){
-  elTimePickRow.innerHTML='';
-  const range=getBcastRange(summaryTime);
-  if(!range.length){elTimePickRow.innerHTML='<span style="font-size:13px;color:var(--text3)">请先选择汇总时间</span>';return;}
-  range.forEach(hr=>{
-    const btn=document.createElement('button');
-    btn.className='tpick-btn'+(pickedBcast===hr?' active':'');
-    btn.textContent=hr+':00';
-    btn.onclick=()=>{
-      pickedBcast=hr;
-      elTimePickRow.querySelectorAll('.tpick-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      const snapped=snapTime(hr);
-      if(parsedVal!==null){elParseResult.textContent=`✓ 房量: ${parsedVal}间　${hr}:00 → 归入${snapped===0?'00':snapped}点`;elParseResult.className='parse-result parse-ok';}
-    };
-    elTimePickRow.appendChild(btn);
-  });
-}
 
 document.getElementById('modalCancel').addEventListener('click',function(e){
   e.stopPropagation();elOverlay.style.display='none';modalHotel=null;
 });
 elOverlay.addEventListener('click',function(e){if(e.target===this){this.style.display='none';modalHotel=null;}});
 document.getElementById('modalBox').addEventListener('click',function(e){e.stopPropagation();});
-
 document.getElementById('modalConfirm').addEventListener('click',function(e){
   e.stopPropagation();
   if(!modalHotel||summaryTime===null)return;
-  const finalVal=parsedVal;
-  const finalBcast=summaryTime;
-  if(finalVal!==null&&!isNaN(finalVal)){
+  if(parsedVal!==null&&!isNaN(parsedVal)){
     if(!allData[modalHotel.id])allData[modalHotel.id]={};
-    allData[modalHotel.id][summaryTime]={val:finalVal,bcast:finalBcast};
-    saveData();
-    renderEntries();updateTimeBtnDots();
+    allData[modalHotel.id][summaryTime]={val:parsedVal,bcast:summaryTime};
+    saveData();renderEntries();updateTimeBtnDots();
     renderChips(document.getElementById('searchInput').value.trim());
   }
   elOverlay.style.display='none';modalHotel=null;
 });
 
-// ── 导入历史数据 ──
+// 导入
 document.getElementById('importBtn').onclick=()=>{
   document.getElementById('importTA').value='';
   document.getElementById('importResult').style.display='none';
   document.getElementById('importOverlay').style.display='flex';
   setTimeout(()=>document.getElementById('importTA').focus(),100);
 };
-document.getElementById('importCancel').onclick=()=>{
-  document.getElementById('importOverlay').style.display='none';
-};
+document.getElementById('importCancel').onclick=()=>document.getElementById('importOverlay').style.display='none';
 document.getElementById('importBox').addEventListener('click',e=>e.stopPropagation());
-document.getElementById('importOverlay').addEventListener('click',function(e){
-  if(e.target===this)this.style.display='none';
-});
-
+document.getElementById('importOverlay').addEventListener('click',function(e){if(e.target===this)this.style.display='none';});
 document.getElementById('importTA').addEventListener('input',function(){
   const res=parseImportText(this.value.trim());
   const el=document.getElementById('importResult');
   if(!res){el.style.display='none';return;}
-  el.textContent=`识别到 ${res.times.length} 个时间段，${res.count} 条店铺数据`;
-  el.className='parse-result parse-ok';
-  el.style.display='block';
+  el.textContent=`识别到 ${res.times.length} 个时间段，${res.count} 条数据`;
+  el.className='parse-result parse-ok';el.style.display='block';
 });
-
 document.getElementById('importConfirm').addEventListener('click',function(e){
   e.stopPropagation();
   const text=document.getElementById('importTA').value.trim();
   const res=parseImportText(text);
   if(!res||res.count===0){
     const el=document.getElementById('importResult');
-    el.textContent='未能识别到有效数据，请检查格式';
-    el.className='parse-result parse-err';
-    el.style.display='block';
-    return;
+    el.textContent='未能识别到有效数据';el.className='parse-result parse-err';el.style.display='block';return;
   }
-  // 全部替换
-  allData=res.data;
-  saveData();
-  renderEntries();
-  updateTimeBtnDots();
+  Object.keys(res.data).forEach(id=>{
+    if(!allData[id])allData[id]={};
+    Object.assign(allData[id],res.data[id]);
+  });
+  saveData();renderEntries();updateTimeBtnDots();
   renderChips(document.getElementById('searchInput').value.trim());
   document.getElementById('importOverlay').style.display='none';
 });
 
 function parseImportText(text){
   if(!text)return null;
-  // 找时间头确定汇总时间
   const timeMatch=text.match(/❤️?(\d{1,2}):00❤️?/);
   if(!timeMatch)return null;
   const summaryH=parseInt(timeMatch[1]);
-
-  // 先扫描所有数据行，找出最多有几列（以/分割）
   const lines=text.split('\n');
   let maxCols=0;
   lines.forEach(line=>{
@@ -560,43 +423,36 @@ function parseImportText(text){
     if(parts.length>maxCols)maxCols=parts.length;
   });
   if(maxCols===0)return null;
-
-  // 根据列数和汇总时间，推算各列对应的时间段
-  // 汇总时间是最后一列，往前推
   const passedTimes=TIMES.filter(t=>t.val<=summaryH);
-  // 取最后 maxCols 个时间段
   const slotTimes=passedTimes.slice(-maxCols);
-
-  const data={};
-  let count=0;
-
+  // 找出是哪个组（根据文本里店铺名匹配）
+  let matchedGroup=null;
+  for(const g of GROUPS){
+    const matched=g.hotels.filter(h=>text.includes(h.name));
+    if(matched.length>0){matchedGroup=g;break;}
+  }
+  if(!matchedGroup)return null;
+  const data={};let count=0;
   lines.forEach(line=>{
     const m=line.replace(/^[^\d]*/,'').match(/^(\d+)[、,，.]\s*(.+?)[：:]\s*(.+)$/);
     if(!m)return;
-    const id=parseInt(m[1]);
-    const dataPart=m[3].trim();
-    const hotel=HOTELS.find(h=>h.id===id);
-    if(!hotel)return;
-
-    const parts=dataPart.split('/');
-    parts.forEach((part,idx)=>{
-      if(idx>=slotTimes.length)return;
-      const p=part.trim();
-      if(p==='-'||p==='')return;
-      const numMatch=p.match(/(\d+)/);
-      if(!numMatch)return;
-      const val=parseInt(numMatch[1]);
-      const slotTime=slotTimes[idx].val;
-      if(!data[id])data[id]={};
-      data[id][slotTime]={val,bcast:slotTime};
-      count++;
+    const idx=parseInt(m[1])-1;
+    if(idx<0||idx>=matchedGroup.hotels.length)return;
+    const hotel=matchedGroup.hotels[idx];
+    const parts=m[3].trim().split('/');
+    parts.forEach((part,i)=>{
+      if(i>=slotTimes.length)return;
+      const p=part.trim();if(p==='-'||p==='')return;
+      const nm=p.match(/(\d+)/);if(!nm)return;
+      const val=parseInt(nm[1]);
+      const slotTime=slotTimes[i].val;
+      if(!data[hotel.id])data[hotel.id]={};
+      data[hotel.id][slotTime]={val,bcast:slotTime};count++;
     });
   });
-
   return{times:slotTimes,count,data};
 }
 
-// ── 清空 ──
 document.getElementById('clearBtn').onclick=()=>{
   if(!confirm('确定清空今日所有数据？'))return;
   allData={};saveData();
@@ -605,41 +461,50 @@ document.getElementById('clearBtn').onclick=()=>{
   document.getElementById('outputSection').style.display='none';
 };
 
-// ── 生成汇总 ──
+// 生成三份汇总
 document.getElementById('genBtn').onclick=()=>{
   if(summaryTime===null){alert('请先选择汇总时间');return;}
   const tl=TIMES.find(t=>t.val===summaryTime);
   const tStr=tl?tl.label:'??:??';
-  // 找出所有已过的时间点（含当前）
   const passedTimes=TIMES.filter(t=>t.val<=summaryTime);
-  let lines=[`❤️${tStr}❤️`];
-  HOTELS.forEach(h=>{
-    const parts=passedTimes.map(t=>{
-      const e=allData[h.id]&&allData[h.id][t.val];
-      if(!e)return'-';
-      return formatVal(e.val,e.bcast,h,t.val);
+  const outputSection=document.getElementById('outputSection');
+  outputSection.innerHTML='';
+  GROUPS.forEach(g=>{
+    let lines=[`❤️${tStr}❤️`];
+    g.hotels.forEach((h,idx)=>{
+      const parts=passedTimes.map(t=>{
+        const e=allData[h.id]&&allData[h.id][t.val];
+        if(!e)return'-';
+        return formatVal(e.val,h,t.val);
+      });
+      lines.push(`${idx+1}、${h.name}：${parts.join('/')}`);
     });
-    lines.push(`${h.id}、${h.name}：${parts.join('/')}`);
+    const text=lines.join('\n');
+    const div=document.createElement('div');
+    div.className='group-output';
+    div.style.marginTop='1rem';
+    div.innerHTML=`
+      <div class="group-header">
+        <span class="group-title">${g.name}</span>
+        <button class="copy-btn" onclick="copyText(this,'${encodeURIComponent(text)}')">📋 复制</button>
+      </div>
+      <div class="output-box">${escHtml(text)}</div>
+    `;
+    outputSection.appendChild(div);
   });
-  document.getElementById('outputBox').textContent=lines.join('\n');
-  document.getElementById('outputSection').style.display='block';
-  document.getElementById('outputSection').scrollIntoView({behavior:'smooth',block:'nearest'});
+  outputSection.style.display='block';
+  outputSection.scrollIntoView({behavior:'smooth',block:'nearest'});
 };
 
-// ── 复制 ──
-document.getElementById('copyBtn').onclick=function(){
-  const text=document.getElementById('outputBox').textContent;
-  const btn=this;
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function copyText(btn,encoded){
+  const text=decodeURIComponent(encoded);
   const done=()=>{btn.textContent='✅ 已复制！';setTimeout(()=>{btn.textContent='📋 复制';},2000);};
   if(navigator.clipboard){navigator.clipboard.writeText(text).then(done);}
   else{const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);done();}
-};
+}
 
-// ── 初始化 ──
-switchMode('normal');
-loadData();
-updateTimeBtnDots();
-renderEntries();
+loadData();buildTimeBtns();updateTimeBtnDots();renderChips('');renderEntries();
 </script>
 </body>
 </html>
