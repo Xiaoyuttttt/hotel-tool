@@ -110,8 +110,8 @@ h1{font-size:18px;font-weight:600;margin-bottom:4px;}
   <div class="modal" id="importBox">
     <div class="modal-handle"></div>
     <h3>导入历史数据</h3>
-    <div style="font-size:13px;color:var(--text2);margin-bottom:10px;">粘贴之前某一组的汇总文本，自动还原历史数据</div>
-    <textarea id="importTA" placeholder="粘贴汇总文本…"></textarea>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:10px;">把三组的汇总文本一起粘贴进来，自动按店铺名还原历史数据</div>
+    <textarea id="importTA" placeholder="把一组、二组、三组的文本一起粘贴进来…"></textarea>
     <div id="importResult" style="display:none"></div>
     <div class="modal-btns">
       <button class="btn-cancel" id="importCancel">取消</button>
@@ -411,10 +411,13 @@ document.getElementById('importConfirm').addEventListener('click',function(e){
 
 function parseImportText(text){
   if(!text)return null;
+  // 找时间头确定汇总时间
   const timeMatch=text.match(/❤️?(\d{1,2}):00❤️?/);
   if(!timeMatch)return null;
   const summaryH=parseInt(timeMatch[1]);
   const lines=text.split('\n');
+
+  // 找出最多列数
   let maxCols=0;
   lines.forEach(line=>{
     const m=line.replace(/^[^\d]*/,'').match(/^(\d+)[、,，.]\s*(.+?)[：:]\s*(.+)$/);
@@ -423,42 +426,62 @@ function parseImportText(text){
     if(parts.length>maxCols)maxCols=parts.length;
   });
   if(maxCols===0)return null;
+
   const passedTimes=TIMES.filter(t=>t.val<=summaryH);
   const slotTimes=passedTimes.slice(-maxCols);
-  // 找出是哪个组（根据文本里店铺名匹配）
-  let matchedGroup=null;
-  for(const g of GROUPS){
-    const matched=g.hotels.filter(h=>text.includes(h.name));
-    if(matched.length>0){matchedGroup=g;break;}
-  }
-  if(!matchedGroup)return null;
+
   const data={};let count=0;
+
   lines.forEach(line=>{
     const m=line.replace(/^[^\d]*/,'').match(/^(\d+)[、,，.]\s*(.+?)[：:]\s*(.+)$/);
     if(!m)return;
-    const idx=parseInt(m[1])-1;
-    if(idx<0||idx>=matchedGroup.hotels.length)return;
-    const hotel=matchedGroup.hotels[idx];
-    const parts=m[3].trim().split('/');
+    const hotelName=m[2].trim();
+    const dataPart=m[3].trim();
+
+    // 用店铺名在所有组里查找
+    const hotel=ALL_HOTELS.find(h=>h.name===hotelName||hotelName.includes(h.name)||h.name.includes(hotelName));
+    if(!hotel)return;
+
+    const parts=dataPart.split('/');
     parts.forEach((part,i)=>{
       if(i>=slotTimes.length)return;
-      const p=part.trim();if(p==='-'||p==='')return;
+      const p=part.trim();
+      if(p==='-'||p==='')return;
       const nm=p.match(/(\d+)/);if(!nm)return;
       const val=parseInt(nm[1]);
       const slotTime=slotTimes[i].val;
       if(!data[hotel.id])data[hotel.id]={};
-      data[hotel.id][slotTime]={val,bcast:slotTime};count++;
+      data[hotel.id][slotTime]={val,bcast:slotTime};
+      count++;
     });
   });
+
   return{times:slotTimes,count,data};
 }
 
+let clearConfirming=false;
+let clearTimer=null;
 document.getElementById('clearBtn').onclick=()=>{
-  if(!confirm('确定清空今日所有数据？'))return;
-  allData={};saveData();
-  renderEntries();updateTimeBtnDots();
-  renderChips(document.getElementById('searchInput').value.trim());
-  document.getElementById('outputSection').style.display='none';
+  if(!clearConfirming){
+    clearConfirming=true;
+    const btn=document.getElementById('clearBtn');
+    btn.textContent='再点确认清空';
+    btn.style.color='var(--danger)';
+    btn.style.borderColor='var(--danger)';
+    clearTimer=setTimeout(()=>{
+      clearConfirming=false;
+      btn.textContent='清空';
+      btn.style.color='';btn.style.borderColor='';
+    },3000);
+  } else {
+    clearTimeout(clearTimer);clearConfirming=false;
+    const btn=document.getElementById('clearBtn');
+    btn.textContent='清空';btn.style.color='';btn.style.borderColor='';
+    allData={};saveData();
+    renderEntries();updateTimeBtnDots();
+    renderChips(document.getElementById('searchInput').value.trim());
+    document.getElementById('outputSection').style.display='none';
+  }
 };
 
 // 生成三份汇总
