@@ -103,6 +103,31 @@ h1{font-size:18px;font-weight:600;margin-bottom:4px;}
   </div>
   <button class="gen-btn" id="genBtn">生成汇总文本</button>
   <div id="outputSection" style="display:none"></div>
+
+  <div id="priceSection" style="display:none;margin-top:1.5rem;">
+    <div class="section-label">调价记录（本时段）</div>
+    <textarea id="priceTA" style="width:100%;height:90px;font-size:14px;padding:10px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg2);color:var(--text);resize:none;line-height:1.6;" placeholder="把调价动作粘贴进来，例如：&#10;富士国际下调10；帕尔拉克下调20；齐鲁下调20"></textarea>
+    <button class="clear-btn" id="savePriceBtn" style="width:100%;margin-top:8px;padding:10px;font-size:14px;">💾 保存本时段调价记录</button>
+    <div id="priceSaved" style="display:none;font-size:12px;color:var(--success);margin-top:6px;"></div>
+  </div>
+
+  <div style="margin-top:1.5rem;border-top:1px solid var(--border);padding-top:1rem;">
+    <button class="clear-btn" id="exportBtn" style="width:100%;padding:11px;font-size:14px;">📤 导出今日全部数据（房量+调价）</button>
+  </div>
+</div>
+
+<!-- 导出弹窗 -->
+<div class="modal-overlay" id="exportOverlay" style="display:none">
+  <div class="modal" id="exportBox">
+    <div class="modal-handle"></div>
+    <h3>今日数据导出</h3>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:10px;">复制下面的表格，粘贴到 Excel 或云文档归档</div>
+    <textarea id="exportTA" style="width:100%;height:220px;font-size:12px;padding:10px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg2);color:var(--text);resize:none;line-height:1.6;font-family:monospace;" readonly></textarea>
+    <div class="modal-btns">
+      <button class="btn-cancel" id="exportCancel">关闭</button>
+      <button class="btn-confirm" id="exportCopy">📋 复制</button>
+    </div>
+  </div>
 </div>
 
 <!-- 导入弹窗 -->
@@ -171,8 +196,10 @@ const SCHEDULES={
 
 const STORAGE_KEY='hotel_data_v3';
 const DATE_KEY='hotel_date_v3';
+const PRICE_KEY='hotel_price_v3';
 
 let allData={};
+let priceData={};
 let currentSchedule='normal';
 let TIMES=SCHEDULES.normal;
 let summaryTime=null;
@@ -183,13 +210,18 @@ function todayStr(){const d=new Date();return`${d.getFullYear()}-${d.getMonth()+
 function loadData(){
   const today=todayStr();
   if(localStorage.getItem(DATE_KEY)!==today){
-    allData={};localStorage.setItem(DATE_KEY,today);localStorage.setItem(STORAGE_KEY,JSON.stringify({}));
+    allData={};priceData={};
+    localStorage.setItem(DATE_KEY,today);
+    localStorage.setItem(STORAGE_KEY,JSON.stringify({}));
+    localStorage.setItem(PRICE_KEY,JSON.stringify({}));
   } else {
     try{allData=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');}catch(e){allData={};}
+    try{priceData=JSON.parse(localStorage.getItem(PRICE_KEY)||'{}');}catch(e){priceData={};}
   }
   document.getElementById('dateBar').textContent='今日：'+today.replace(/-/g,'/')+' · 数据自动按天清空';
 }
 function saveData(){localStorage.setItem(STORAGE_KEY,JSON.stringify(allData));}
+function savePriceData(){localStorage.setItem(PRICE_KEY,JSON.stringify(priceData));}
 
 function getTag(val,hotel,slotTime){
   if(!Object.keys(hotel.ref).length)return{label:'',cls:''};
@@ -476,10 +508,11 @@ document.getElementById('clearBtn').onclick=()=>{
     clearTimeout(clearTimer);clearConfirming=false;
     const btn=document.getElementById('clearBtn');
     btn.textContent='清空';btn.style.color='';btn.style.borderColor='';
-    allData={};saveData();
+    allData={};priceData={};saveData();savePriceData();
     renderEntries();updateTimeBtnDots();
     renderChips(document.getElementById('searchInput').value.trim());
     document.getElementById('outputSection').style.display='none';
+    document.getElementById('priceSection').style.display='none';
   }
 };
 
@@ -515,7 +548,69 @@ document.getElementById('genBtn').onclick=()=>{
     outputSection.appendChild(div);
   });
   outputSection.style.display='block';
+  // 显示调价记录区，加载本时段已存的调价
+  const priceSection=document.getElementById('priceSection');
+  priceSection.style.display='block';
+  document.getElementById('priceTA').value=priceData[summaryTime]||'';
+  document.getElementById('priceSaved').style.display='none';
   outputSection.scrollIntoView({behavior:'smooth',block:'nearest'});
+};
+
+// 保存调价记录
+document.getElementById('savePriceBtn').onclick=()=>{
+  if(summaryTime===null)return;
+  const txt=document.getElementById('priceTA').value.trim();
+  if(txt)priceData[summaryTime]=txt;
+  else delete priceData[summaryTime];
+  savePriceData();
+  const saved=document.getElementById('priceSaved');
+  const tl=TIMES.find(t=>t.val===summaryTime);
+  saved.textContent=`✓ 已保存 ${tl?tl.label:''} 的调价记录`;
+  saved.style.display='block';
+  setTimeout(()=>{saved.style.display='none';},2500);
+};
+
+// 导出今日全部数据
+document.getElementById('exportBtn').onclick=()=>{
+  const today=todayStr();
+  let rows=['日期\t时段\t店铺\t房量\t调价'];
+  // 按时段遍历所有出现过的时间点
+  const allTimeVals=new Set();
+  ALL_HOTELS.forEach(h=>{if(allData[h.id])Object.keys(allData[h.id]).forEach(t=>allTimeVals.add(+t));});
+  Object.keys(priceData).forEach(t=>allTimeVals.add(+t));
+  const sortedTimes=[...allTimeVals].sort((a,b)=>a-b);
+
+  sortedTimes.forEach(tv=>{
+    const priceText=priceData[tv]||'';
+    ALL_HOTELS.forEach(h=>{
+      const e=allData[h.id]&&allData[h.id][tv];
+      if(!e)return;
+      // 尝试从调价文本里找这家店的调价
+      let adj='';
+      if(priceText){
+        // 匹配"店铺名...上调/下调数字"
+        const shortName=h.name;
+        const re=new RegExp(shortName.slice(0,2)+'[^；;\\n]*?(上调|下调|涨|降)\\s*(\\d+)');
+        const mm=priceText.match(re);
+        if(mm){adj=(mm[1]==='上调'||mm[1]==='涨'?'+':'-')+mm[2];}
+      }
+      rows.push(`${today}\t${tv}:00\t${h.name}\t${e.val}\t${adj}`);
+    });
+  });
+
+  const out=rows.join('\n');
+  document.getElementById('exportTA').value=out;
+  document.getElementById('exportOverlay').style.display='flex';
+};
+document.getElementById('exportCancel').onclick=()=>document.getElementById('exportOverlay').style.display='none';
+document.getElementById('exportBox').addEventListener('click',e=>e.stopPropagation());
+document.getElementById('exportOverlay').addEventListener('click',function(e){if(e.target===this)this.style.display='none';});
+document.getElementById('exportCopy').onclick=function(){
+  const text=document.getElementById('exportTA').value;
+  const btn=this;
+  const done=()=>{btn.textContent='✅ 已复制！';setTimeout(()=>{btn.textContent='📋 复制';},2000);};
+  if(navigator.clipboard){navigator.clipboard.writeText(text).then(done);}
+  else{const ta=document.getElementById('exportTA');ta.select();document.execCommand('copy');done();}
 };
 
 function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
