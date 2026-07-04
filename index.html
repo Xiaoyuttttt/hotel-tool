@@ -269,7 +269,14 @@ function parseText(text,mode){
   }
   if(mode==='kelai'){
     const ms=[...text.matchAll(/可卖[：:\s]*(\d+)/g)];
-    if(ms.length){const nums=ms.map(x=>+x[1]),s=nums.reduce((a,b)=>a+b,0);return{val:s,note:'可卖合计: '+nums.join('+')+' = '+s};}
+    if(ms.length){
+      const nums=ms.map(x=>+x[1]);
+      const keMai=nums.reduce((a,b)=>a+b,0);
+      const yuMatch=text.match(/预离[：:\s]*(\d+)/);
+      const yuLi=yuMatch?+yuMatch[1]:0;
+      const tot=keMai+yuLi;
+      return{val:tot,note:`可卖${keMai}(${nums.join('+')})+预离${yuLi}=${tot}`};
+    }
     m=text.match(/剩余房量[：:\s]*(\d+)/);if(m)return{val:+m[1],note:'剩余房量: '+m[1]};
   }
   if(mode==='sum'){
