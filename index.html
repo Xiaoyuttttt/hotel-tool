@@ -577,25 +577,23 @@ document.getElementById('savePriceBtn').onclick=()=>{
   setTimeout(()=>{saved.style.display='none';},2500);
 };
 
-// 导出今日全部数据
+// 导出今日全部数据（仅二组）
 document.getElementById('exportBtn').onclick=()=>{
   const today=todayStr();
+  const group2=GROUPS[1].hotels; // 二组
   let rows=['日期\t时段\t店铺\t房量\t调价'];
-  // 按时段遍历所有出现过的时间点
   const allTimeVals=new Set();
-  ALL_HOTELS.forEach(h=>{if(allData[h.id])Object.keys(allData[h.id]).forEach(t=>allTimeVals.add(+t));});
+  group2.forEach(h=>{if(allData[h.id])Object.keys(allData[h.id]).forEach(t=>allTimeVals.add(+t));});
   Object.keys(priceData).forEach(t=>allTimeVals.add(+t));
   const sortedTimes=[...allTimeVals].sort((a,b)=>a-b);
 
   sortedTimes.forEach(tv=>{
     const priceText=priceData[tv]||'';
-    ALL_HOTELS.forEach(h=>{
+    group2.forEach(h=>{
       const e=allData[h.id]&&allData[h.id][tv];
       if(!e)return;
-      // 尝试从调价文本里找这家店的调价
       let adj='';
       if(priceText){
-        // 匹配"店铺名...上调/下调数字"
         const shortName=h.name;
         const re=new RegExp(shortName.slice(0,2)+'[^；;\\n]*?(上调|下调|涨|降)\\s*(\\d+)');
         const mm=priceText.match(re);
