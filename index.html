@@ -168,8 +168,6 @@ const GROUPS=[
     {id:'g1_4', name:"华逸",        parse:"ke_ding",    ref:{}},
     {id:'g1_5', name:"尚钰",        parse:"sheng_yu",   ref:{}},
     {id:'g1_6', name:"昌吉华东容锦",parse:"manual",     ref:{}},
-    {id:'g1_7', name:"奇台华东容锦",parse:"manual",     ref:{}},
-    {id:'g1_8', name:"桃花源",      parse:"taohuayuan", ref:{}},
     {id:'g1_9', name:"铂鑫",        parse:"ke_shou2",   ref:{10:50,12:45,14:35,17:30,20:20,22:15,0:8}},
     {id:'g3_1', name:"久佳长江路",  parse:"sheng_liang",ref:{10:21,12:18,14:15,17:12,20:8,22:5,0:3}},
     {id:'g3_2', name:"久佳宝山路",  parse:"sheng_yu",   ref:{10:28,12:20,14:16,17:13,20:10,22:6,0:3}},
@@ -260,7 +258,6 @@ function parseText(text,mode){
   if(mode==='sheng_yu'){m=text.match(/剩余可售[：:\s]*(\d+)/);if(m)return{val:+m[1],note:'剩余可售: '+m[1]};}
   if(mode==='sheng_liang'){m=text.match(/剩余房量[：:\s]*(\d+)/);if(m)return{val:+m[1],note:'剩余房量: '+m[1]};}
   if(mode==='ke_shou2'){m=text.match(/今日可售房[：:\s]*(\d+)/);if(m)return{val:+m[1],note:'今日可售房: '+m[1]};}
-  if(mode==='taohuayuan'){m=text.match(/可用房[：:\s]*(\d+)/);if(m)return{val:+m[1],note:'可用房: '+m[1]};}
   if(mode==='fushi'){m=text.match(/剩下可售[；;：:\s]*(\d+)/)||text.match(/可售[；;：:\s]*(\d+)/);if(m)return{val:+m[1],note:'可售: '+m[1]};}
   if(mode==='chenrun'){
     const ke=text.match(/剩余可售[：:\s]*(\d+)/);
