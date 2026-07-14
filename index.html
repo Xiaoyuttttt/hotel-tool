@@ -257,7 +257,11 @@ function parseText(text,mode){
   if(mode==='ke_ding'){m=text.match(/可订房数[：:\s]*(\d+)/);if(m)return{val:+m[1],note:'可订房数: '+m[1]};}
   if(mode==='sheng_yu'){m=text.match(/剩余可售[：:\s]*(\d+)/);if(m)return{val:+m[1],note:'剩余可售: '+m[1]};}
   if(mode==='sheng_liang'){m=text.match(/剩余房量[：:\s]*(\d+)/);if(m)return{val:+m[1],note:'剩余房量: '+m[1]};}
-  if(mode==='ke_shou2'){m=text.match(/今日可售房[：:\s]*(\d+)/);if(m)return{val:+m[1],note:'今日可售房: '+m[1]};}
+  if(mode==='ke_shou2'){
+    const ke=text.match(/今日可售房[：:\s]*(\d+)/);
+    const yu=text.match(/今日预离[：:\s]*(\d+)/)||text.match(/预离[：:\s]*(\d+)/);
+    if(ke){const kv=+ke[1],yv=yu?+yu[1]:0,tot=kv+yv;return{val:tot,note:`今日可售房${kv}+今日预离${yv}=${tot}`};}
+  }
   if(mode==='fushi'){m=text.match(/剩下可售[；;：:\s]*(\d+)/)||text.match(/可售[；;：:\s]*(\d+)/);if(m)return{val:+m[1],note:'可售: '+m[1]};}
   if(mode==='chenrun'){
     const ke=text.match(/剩余可售[：:\s]*(\d+)/);
