@@ -135,8 +135,8 @@ h1{font-size:18px;font-weight:600;margin-bottom:4px;}
   <div class="modal" id="importBox">
     <div class="modal-handle"></div>
     <h3>导入历史数据</h3>
-    <div style="font-size:13px;color:var(--text2);margin-bottom:10px;">把三组的汇总文本一起粘贴进来，自动按店铺名还原历史数据</div>
-    <textarea id="importTA" placeholder="把一组、二组、三组的文本一起粘贴进来…"></textarea>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:10px;">把各组汇总文本一起粘贴进来，自动按店铺名还原历史数据</div>
+    <textarea id="importTA" placeholder="把一组、二组的文本一起粘贴进来…"></textarea>
     <div id="importResult" style="display:none"></div>
     <div class="modal-btns">
       <button class="btn-cancel" id="importCancel">取消</button>
@@ -172,6 +172,8 @@ const GROUPS=[
     {id:'g3_1', name:"久佳长江路",  parse:"sheng_liang",ref:{10:21,12:18,14:15,17:12,20:8,22:5,0:3}},
     {id:'g3_2', name:"久佳宝山路",  parse:"sheng_yu",   ref:{10:28,12:20,14:16,17:13,20:10,22:6,0:3}},
     {id:'g3_3', name:"月明楼",      parse:"sheng_yu",   ref:{}},
+    {id:'g3_4', name:"成润商务",    parse:"chenrun",    ref:{}},
+    {id:'g3_5', name:"遇见云宿",    parse:"ke_shou",    ref:{10:22,12:20,14:18,17:14,20:10,22:6,0:3}},
   ]},
   {name:'二组',hotels:[
     {id:'g2_1', name:"凯莱",        parse:"kelai",      ref:{10:48,12:40,14:35,17:25,20:20,22:15,0:10}},
@@ -179,10 +181,6 @@ const GROUPS=[
     {id:'g2_3', name:"帕尔拉克",    parse:"sheng_yu",   ref:{10:70,12:55,14:40,17:30,20:20,22:10,0:5}},
     {id:'g2_4', name:"富士国际",    parse:"fushi",      ref:{}},
     {id:'g2_5', name:"边疆宾馆",    parse:"sum",        ref:{}},
-  ]},
-  {name:'三组',hotels:[
-    {id:'g3_4', name:"成润商务",    parse:"chenrun",    ref:{}},
-    {id:'g3_5', name:"遇见云宿",    parse:"ke_shou",    ref:{10:22,12:20,14:18,17:14,20:10,22:6,0:3}},
   ]},
 ];
 const ALL_HOTELS=GROUPS.flatMap(g=>g.hotels);
@@ -524,7 +522,7 @@ document.getElementById('clearBtn').onclick=()=>{
   }
 };
 
-// 生成三份汇总
+// 生成各组汇总
 document.getElementById('genBtn').onclick=()=>{
   if(summaryTime===null){alert('请先选择汇总时间');return;}
   const tl=TIMES.find(t=>t.val===summaryTime);
