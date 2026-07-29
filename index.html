@@ -169,6 +169,7 @@ const GROUPS=[
     {id:'g1_6', name:"昌吉华东容锦",parse:"manual",     ref:{}},
     {id:'g1_9', name:"铂鑫",        parse:"ke_shou2",   ref:{10:50,12:45,14:35,17:30,20:20,22:15,0:8}},
     {id:'g1_10',name:"艾丁湖店",    parse:"manual",     ref:{}},
+    {id:'g1_11',name:"美美",        parse:"meimei",     ref:{}},
     {id:'g3_1', name:"久佳长江路",  parse:"sheng_liang",ref:{10:21,12:18,14:15,17:12,20:8,22:5,0:3}},
     {id:'g3_2', name:"久佳宝山路",  parse:"sheng_yu",   ref:{10:28,12:20,14:16,17:13,20:10,22:6,0:3}},
     {id:'g3_3', name:"月明楼",      parse:"sheng_yu",   ref:{}},
@@ -259,6 +260,23 @@ function parseText(text,mode){
     const ke=text.match(/今日可售房[：:\s]*(\d+)/);
     const yu=text.match(/今日预离[：:\s]*(\d+)/)||text.match(/预离[：:\s]*(\d+)/);
     if(ke){const kv=+ke[1],yv=yu?+yu[1]:0,tot=kv+yv;return{val:tot,note:`今日可售房${kv}+今日预离${yv}=${tot}`};}
+  }
+  if(mode==='meimei'){
+    const yu=text.match(/预离房[：:\s]*(\d+)/)||text.match(/预离[：:\s]*(\d+)/);
+    const nums=[];
+    text.split('\n').forEach(line=>{
+      const l=line.trim();
+      if(!l||/在住|预订|预离/.test(l))return;
+      let mm=l.match(/可售[：:\s]*(\d+)\s*间/);
+      if(!mm)mm=l.match(/(\d+)\s*间\s*$/);
+      if(mm)nums.push(+mm[1]);
+    });
+    if(nums.length){
+      const sell=nums.reduce((a,b)=>a+b,0);
+      const yv=yu?+yu[1]:0;
+      const tot=sell+yv;
+      return{val:tot,note:`可售${sell}(${nums.join('+')})+预离${yv}=${tot}`};
+    }
   }
   if(mode==='fushi'){m=text.match(/剩下可售[；;：:\s]*(\d+)/)||text.match(/可售[；;：:\s]*(\d+)/);if(m)return{val:+m[1],note:'可售: '+m[1]};}
   if(mode==='chenrun'){
