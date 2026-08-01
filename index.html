@@ -162,15 +162,14 @@ h1{font-size:18px;font-weight:600;margin-bottom:4px;}
 <script>
 const GROUPS=[
   {name:'一组',hotels:[
-    {id:'g1_2', name:"巨博",        parse:"sheng_yu",   ref:{10:48,12:40,14:30,17:25,20:20,22:15,0:10}},
-    {id:'g1_3', name:"丽庭",        parse:"manual",     ref:{}},
-    {id:'g1_4', name:"华逸",        parse:"ke_ding",    ref:{}},
-    {id:'g1_5', name:"尚钰",        parse:"sheng_yu",   ref:{}},
-  ]},
-  {name:'二组',hotels:[
+    {id:'g2_1', name:"凯莱",        parse:"kelai",      ref:{10:48,12:40,14:35,17:25,20:20,22:15,0:10}},
+    {id:'g2_2', name:"齐鲁",        parse:"sheng_yu",   ref:{10:50,12:40,14:30,17:25,20:20,22:10,0:5}},
+    {id:'g3_4', name:"成润",        parse:"chenrun",    ref:{}},
+    {id:'g3_5', name:"遇见",        parse:"ke_shou",    ref:{10:22,12:20,14:18,17:14,20:10,22:6,0:3}},
     {id:'g2_3', name:"帕尔拉克",    parse:"sheng_yu",   ref:{10:70,12:55,14:40,17:30,20:20,22:10,0:5}},
     {id:'g2_4', name:"富士国际",    parse:"fushi",      ref:{}},
-    {id:'g2_5', name:"边疆宾馆",    parse:"sum",        ref:{}},
+    {id:'g2_5', name:"边疆",        parse:"sum",        ref:{}},
+    {id:'g1_9', name:"铂鑫",        parse:"ke_shou2",   ref:{10:50,12:45,14:35,17:30,20:20,22:15,0:8}},
   ]},
 ];
 const ALL_HOTELS=GROUPS.flatMap(g=>g.hotels);
@@ -583,10 +582,10 @@ document.getElementById('savePriceBtn').onclick=()=>{
   setTimeout(()=>{saved.style.display='none';},2500);
 };
 
-// 导出今日全部数据（仅二组）
+// 导出今日全部数据（当前全部门店）
 document.getElementById('exportBtn').onclick=()=>{
   const today=todayStr();
-  const group2=GROUPS[1].hotels; // 二组
+  const group2=ALL_HOTELS;
   let rows=['日期\t时段\t店铺\t房量\t调价'];
   const allTimeVals=new Set();
   group2.forEach(h=>{if(allData[h.id])Object.keys(allData[h.id]).forEach(t=>allTimeVals.add(+t));});
